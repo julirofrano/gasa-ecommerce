@@ -19,22 +19,28 @@ import { createOrder } from "@/lib/odoo/orders";
 import { createPreference } from "@/lib/mercadopago/preferences";
 import { getDeliveryMethodLabel, classifyCartItems } from "@/lib/data/delivery";
 import { getBranchById } from "@/lib/odoo/branches";
+import { refreshCartPrices } from "@/app/(shop)/cart/actions";
 
 /** Convert cart items to Odoo order lines. Gas items with containerCapacity
- *  send total gas quantity (capacity × containers) and price per unit of measure. */
-function toOrderLines(items: CartItem[]) {
+ *  send total gas quantity (capacity × containers) and price per unit of measure.
+ *  Uses server-verified prices when available. */
+function toOrderLines(
+  items: CartItem[],
+  serverPrices?: Record<string, number>,
+) {
   return items.map((item) => {
+    const price = serverPrices?.[item.cartKey] ?? item.price;
     if (item.containerCapacity && item.containerCapacity > 0) {
       return {
         productId: item.productId,
         quantity: item.containerCapacity * item.quantity,
-        priceUnit: item.price / item.containerCapacity,
+        priceUnit: price / item.containerCapacity,
       };
     }
     return {
       productId: item.productId,
       quantity: item.quantity,
-      priceUnit: item.price,
+      priceUnit: price,
     };
   });
 }
@@ -262,9 +268,20 @@ export async function submitCheckout(
       }
     }
 
-    // 5. Determine if we need to split into 2 orders
+    // 5. Re-fetch prices server-side — never trust client-provided prices
     const session = await auth();
     const pricelistId = session?.user?.pricelistId ?? undefined;
+
+    const serverPrices = await refreshCartPrices(
+      cartItems.map((item) => ({
+        cartKey: item.cartKey,
+        productId: item.productId,
+        productType: item.productType,
+        variantId: item.variantId,
+      })),
+    );
+
+    // 6. Determine if we need to split into 2 orders
     const { ownDelivery, carrierDelivery } = classifyCartItems(cartItems);
     const isMixedCart = ownDelivery.length > 0 && carrierDelivery.length > 0;
     const shouldSplit =
@@ -276,7 +293,7 @@ export async function submitCheckout(
       // ── Split into 2 separate Odoo orders ──
       const gasNotes = await buildDeliveryNotes(data, ownDelivery, "gas");
       const gasFullNotes = [data.notes, gasNotes].filter(Boolean).join("\n\n");
-      const gasLines = toOrderLines(ownDelivery);
+      const gasLines = toOrderLines(ownDelivery, serverPrices.prices);
       const gasOrderId = await createOrder(
         partnerId,
         gasLines,
@@ -294,7 +311,7 @@ export async function submitCheckout(
       const supplyFullNotes = [data.notes, supplyNotes]
         .filter(Boolean)
         .join("\n\n");
-      const supplyLines = toOrderLines(carrierDelivery);
+      const supplyLines = toOrderLines(carrierDelivery, serverPrices.prices);
       const supplyOrderId = await createOrder(
         partnerId,
         supplyLines,
@@ -307,7 +324,7 @@ export async function submitCheckout(
       externalReference = `orders_${gasOrderId}_${supplyOrderId}`;
     } else {
       // ── Single order (pure cart or both use same delivery) ──
-      const orderLines = toOrderLines(cartItems);
+      const orderLines = toOrderLines(cartItems, serverPrices.prices);
       const deliveryNotes = await buildDeliveryNotes(data, cartItems);
       const fullNotes = [data.notes, deliveryNotes]
         .filter(Boolean)
@@ -325,13 +342,14 @@ export async function submitCheckout(
       externalReference = `order_${orderId}`;
     }
 
-    // 6. Create MercadoPago preference (unit_price includes tax)
+    // 7. Create MercadoPago preference (unit_price includes tax)
     const mpItems = cartItems.map((item) => {
-      const rate = item.taxRate ?? 21;
+      const price = serverPrices.prices[item.cartKey] ?? item.price;
+      const rate = serverPrices.taxRates[item.cartKey] ?? 21;
       return {
         title: item.name,
         quantity: item.quantity,
-        unit_price: Math.round(item.price * (1 + rate / 100) * 100) / 100,
+        unit_price: Math.round(price * (1 + rate / 100) * 100) / 100,
       };
     });
 

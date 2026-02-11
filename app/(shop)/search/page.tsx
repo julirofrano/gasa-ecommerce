@@ -45,10 +45,15 @@ export default async function SearchPage({ searchParams }: Props) {
     );
   }
 
-  const session = await auth();
-  const pricelistId = session?.user?.pricelistId ?? undefined;
+  let products: Awaited<ReturnType<typeof searchShopProducts>> = [];
 
-  const products = await searchShopProducts(query, { pricelistId });
+  try {
+    const session = await auth();
+    const pricelistId = session?.user?.pricelistId ?? undefined;
+    products = await searchShopProducts(query, { pricelistId });
+  } catch (error) {
+    console.error("[GASA] Error al conectar con Odoo:", error);
+  }
 
   return (
     <div>

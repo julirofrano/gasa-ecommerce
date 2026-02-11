@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { odooClient } from "@/lib/odoo/client";
+import { getOrderById } from "@/lib/odoo/orders";
+import { verifyResourceOwnership } from "@/lib/auth/ownership";
 
 const REPORT_NAME = "sale.report_saleorder";
 
@@ -21,6 +23,20 @@ export async function GET(
   }
 
   try {
+    // Verify the order belongs to the user's company
+    const order = await getOrderById(orderId);
+    if (!order) {
+      return NextResponse.json(
+        { error: "Documento no encontrado" },
+        { status: 404 },
+      );
+    }
+
+    const isOwner = await verifyResourceOwnership(order.partner_id[0]);
+    if (!isOwner) {
+      return NextResponse.json({ error: "No autorizado" }, { status: 403 });
+    }
+
     const pdf = await odooClient.fetchReportPdf(REPORT_NAME, orderId);
 
     return new NextResponse(pdf, {

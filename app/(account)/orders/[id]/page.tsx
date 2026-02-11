@@ -17,6 +17,8 @@ import {
   getOrderContainerTransfers,
 } from "@/lib/odoo/orders";
 import { getInvoiceNames } from "@/lib/odoo/invoices";
+import { getRequiredSession } from "@/lib/auth/session";
+import { verifyResourceOwnership } from "@/lib/auth/ownership";
 import type { ContainerTransferWithLines } from "@/lib/odoo/orders";
 import { StatusBadge } from "@/components/account/status-badge";
 import { ReorderButton } from "@/components/account/reorder-button";
@@ -64,9 +66,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function OrderDetailPage({ params }: Props) {
   const { id } = await params;
+  await getRequiredSession();
   const order = await getOrderById(Number(id));
 
   if (!order) {
+    notFound();
+  }
+
+  // Verify the order belongs to the authenticated user's company
+  const isOwner = await verifyResourceOwnership(order.partner_id[0]);
+  if (!isOwner) {
     notFound();
   }
 

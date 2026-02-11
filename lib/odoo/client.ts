@@ -1,5 +1,12 @@
 import type { OdooRPCResponse, OdooAuthResponse } from "./types";
 
+export class OdooConnectionError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "OdooConnectionError";
+  }
+}
+
 export class OdooClient {
   private url: string;
   private db: string;
@@ -23,20 +30,23 @@ export class OdooClient {
   }
 
   async authenticate(): Promise<OdooAuthResponse> {
-    const response = await fetch(`${this.url}/web/session/authenticate`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        jsonrpc: "2.0",
-        method: "call",
-        params: {
-          db: this.db,
-          login: this.username,
-          password: this.password,
-        },
-        id: this.getNextId(),
-      }),
-    });
+    const response = await this.safeFetch(
+      `${this.url}/web/session/authenticate`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          jsonrpc: "2.0",
+          method: "call",
+          params: {
+            db: this.db,
+            login: this.username,
+            password: this.password,
+          },
+          id: this.getNextId(),
+        }),
+      },
+    );
 
     if (!response.ok) {
       throw new Error(`Odoo authentication failed: ${response.statusText}`);
@@ -87,7 +97,7 @@ export class OdooClient {
       ...(extraContext as Record<string, unknown> | undefined),
     };
 
-    const response = await fetch(`${this.url}/jsonrpc`, {
+    const response = await this.safeFetch(`${this.url}/jsonrpc`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -204,20 +214,23 @@ export class OdooClient {
     recordId: number,
   ): Promise<ArrayBuffer> {
     // Authenticate to obtain a session cookie
-    const authRes = await fetch(`${this.url}/web/session/authenticate`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        jsonrpc: "2.0",
-        method: "call",
-        params: {
-          db: this.db,
-          login: this.username,
-          password: this.password,
-        },
-        id: this.getNextId(),
-      }),
-    });
+    const authRes = await this.safeFetch(
+      `${this.url}/web/session/authenticate`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          jsonrpc: "2.0",
+          method: "call",
+          params: {
+            db: this.db,
+            login: this.username,
+            password: this.password,
+          },
+          id: this.getNextId(),
+        }),
+      },
+    );
 
     if (!authRes.ok) {
       throw new Error(`Odoo auth for report failed: ${authRes.statusText}`);
@@ -231,7 +244,7 @@ export class OdooClient {
       throw new Error("No session cookie received from Odoo");
     }
 
-    const pdfRes = await fetch(
+    const pdfRes = await this.safeFetch(
       `${this.url}/report/pdf/${reportName}/${recordId}`,
       { headers: { Cookie: sessionCookie } },
     );
@@ -241,6 +254,17 @@ export class OdooClient {
     }
 
     return pdfRes.arrayBuffer();
+  }
+
+  private async safeFetch(url: string, init: RequestInit): Promise<Response> {
+    try {
+      return await fetch(url, init);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new OdooConnectionError(
+        `No se pudo conectar con Odoo (${this.url}): ${message}`,
+      );
+    }
   }
 
   private getNextId(): number {

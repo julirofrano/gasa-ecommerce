@@ -66,9 +66,17 @@ export default async function ContainerDetailPage({ params }: Props) {
   const childIds = await getChildPartnerIds(ownerPartnerId);
   const customerContactIds = new Set([ownerPartnerId, ...childIds]);
 
-  // Determine ownership and apply masking
+  // Verify the container belongs to or is in possession of the user's company
   const isOwned =
     container.owner_customer && container.owner_customer[0] === ownerPartnerId;
+  const isInPossession =
+    container.location === "customer" &&
+    container.location_customer &&
+    customerContactIds.has(container.location_customer[0]);
+
+  if (!isOwned && !isInPossession) {
+    notFound();
+  }
 
   let displayStatus = container.status;
   let displayLocation = container.effective_location;

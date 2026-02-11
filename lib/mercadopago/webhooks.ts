@@ -16,10 +16,8 @@ export function validateWebhookSignature(
 ): boolean {
   if (!xSignature || !xRequestId) return false;
   if (!MERCADOPAGO_WEBHOOK_SECRET) {
-    console.warn(
-      "MERCADOPAGO_WEBHOOK_SECRET not set — skipping signature validation",
-    );
-    return true;
+    console.error("MERCADOPAGO_WEBHOOK_SECRET not set — rejecting webhook");
+    return false;
   }
 
   // Parse ts and v1 from x-signature header (format: "ts=...,v1=...")
@@ -82,6 +80,7 @@ async function processOrderPayment(
   orderId: number,
   paymentId: string,
   status: string,
+  transactionAmount?: number,
 ) {
   const order = await getOrderById(orderId);
   if (!order) {
@@ -105,6 +104,18 @@ async function processOrderPayment(
         );
         break;
       }
+
+      // Verify payment amount matches order total (tolerance of $1 for rounding)
+      if (
+        transactionAmount !== undefined &&
+        Math.abs(transactionAmount - order.amount_total) > 1
+      ) {
+        console.error(
+          `Payment amount mismatch for order ${orderId}: paid ${transactionAmount}, expected ${order.amount_total}`,
+        );
+        break;
+      }
+
       await confirmOrder(orderId);
       await writeOrderPaymentRef(orderId, mpPaymentRef);
       console.log(
@@ -163,8 +174,20 @@ export async function processPaymentNotification(paymentId: string) {
     return payment;
   }
 
+  // For multi-order payments, split the amount check per order
+  // (amount validation happens inside processOrderPayment)
+  const totalAmount: number | undefined = payment.transaction_amount;
+
   for (const orderId of orderIds) {
-    await processOrderPayment(orderId, paymentId, payment.status);
+    // For single-order: pass full amount; for multi-order: skip amount check
+    // (each order's total may differ, and MP only reports the aggregate)
+    const amountForOrder = orderIds.length === 1 ? totalAmount : undefined;
+    await processOrderPayment(
+      orderId,
+      paymentId,
+      payment.status,
+      amountForOrder,
+    );
   }
 
   return payment;

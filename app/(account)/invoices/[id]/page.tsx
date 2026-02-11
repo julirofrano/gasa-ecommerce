@@ -9,6 +9,8 @@ import {
 } from "@/lib/utils/constants";
 import { formatCurrency, formatDate } from "@/lib/utils/formatting";
 import { getInvoiceById, getInvoiceLines } from "@/lib/odoo/invoices";
+import { getRequiredSession } from "@/lib/auth/session";
+import { verifyResourceOwnership } from "@/lib/auth/ownership";
 import { StatusBadge } from "@/components/account/status-badge";
 import type { OdooInvoice } from "@/lib/odoo/types";
 
@@ -58,9 +60,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function InvoiceDetailPage({ params }: Props) {
   const { id } = await params;
+  await getRequiredSession();
   const invoice = await getInvoiceById(Number(id));
 
   if (!invoice) {
+    notFound();
+  }
+
+  // Verify the invoice belongs to the authenticated user's company
+  const isOwner = await verifyResourceOwnership(invoice.partner_id[0]);
+  if (!isOwner) {
     notFound();
   }
 

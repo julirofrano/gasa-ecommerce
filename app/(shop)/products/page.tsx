@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ROUTES } from "@/lib/utils/constants";
+import type { Product, ProductCategory } from "@/types";
 import {
   getShopCategories,
   getShopProducts,
@@ -19,10 +20,17 @@ export const metadata: Metadata = {
 const PREVIEW_LIMIT = 4;
 
 export default async function ProductsPage() {
-  const [categories, allProducts] = await Promise.all([
-    getShopCategories(),
-    getShopProducts({ limit: 500 }),
-  ]);
+  let categories: ProductCategory[] = [];
+  let allProducts: Product[] = [];
+
+  try {
+    [categories, allProducts] = await Promise.all([
+      getShopCategories(),
+      getShopProducts({ limit: 500 }),
+    ]);
+  } catch (error) {
+    console.error("[GASA] Error al conectar con Odoo:", error);
+  }
 
   // Group products by categoryId
   const productsByCategory = new Map<number, typeof allProducts>();
