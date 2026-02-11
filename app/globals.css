@@ -1,0 +1,229 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #ffffff;
+  --foreground: #000000;
+  --muted: #f2f2f2;
+  --muted-foreground: #666666;
+  --accent: #0094bb;
+  --border: #000000;
+  --input: #000000;
+  --primary: #000000;
+  --primary-foreground: #ffffff;
+  --card: #ffffff;
+  --card-foreground: #000000;
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+  --muted: #1a1a1a;
+  --muted-foreground: #a0a0a0;
+  --accent: #0094bb;
+  --border: #fafafa;
+  --input: #fafafa;
+  --primary: #fafafa;
+  --primary-foreground: #0a0a0a;
+  --card: #111111;
+  --card-foreground: #fafafa;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --font-sans: var(--font-inter);
+}
+
+/* Global Swiss resets — no rounded corners, no shadows */
+*,
+*::before,
+*::after {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Escape class for small circular status dots */
+.dot-indicator {
+  border-radius: 9999px !important;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Swiss texture patterns */
+.pattern-grid {
+  background-image:
+    linear-gradient(
+      color-mix(in srgb, currentColor 5%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, currentColor 5%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 20px 20px;
+}
+
+.pattern-dots {
+  background-image: radial-gradient(
+    circle,
+    color-mix(in srgb, currentColor 8%, transparent) 1px,
+    transparent 1px
+  );
+  background-size: 16px 16px;
+}
+
+.pattern-diagonal {
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    color-mix(in srgb, currentColor 3%, transparent) 10px,
+    color-mix(in srgb, currentColor 3%, transparent) 11px
+  );
+}
+
+/* Marquee / ticker animation */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 35s linear infinite;
+}
+
+/* Scroll-reveal: fade up */
+.animate-fade-up {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.6s ease-out,
+    transform 0.6s ease-out;
+}
+
+.animate-fade-up.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger delays for child elements */
+.stagger-1 {
+  transition-delay: 0.1s;
+}
+.stagger-2 {
+  transition-delay: 0.2s;
+}
+.stagger-3 {
+  transition-delay: 0.3s;
+}
+.stagger-4 {
+  transition-delay: 0.4s;
+}
+.stagger-5 {
+  transition-delay: 0.5s;
+}
+
+/* Hero line entrance */
+@keyframes hero-line-in {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-hero-line {
+  opacity: 0;
+  animation: hero-line-in 0.8s ease-out forwards;
+  animation-delay: 0.1s;
+}
+
+/* ── Leaflet map overrides — Swiss design ── */
+.leaflet-container {
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+.leaflet-control-zoom a {
+  border: 2px solid var(--foreground) !important;
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+  font-weight: 700;
+  width: 30px !important;
+  height: 30px !important;
+  line-height: 26px !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: var(--foreground) !important;
+  color: var(--background) !important;
+}
+
+.leaflet-control-attribution {
+  font-size: 9px;
+  background: var(--background) !important;
+  color: var(--muted-foreground) !important;
+}
+
+.leaflet-popup-content-wrapper {
+  border: 2px solid var(--foreground) !important;
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+}
+
+.leaflet-popup-content {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 8px 12px !important;
+}
+
+.leaflet-popup-tip {
+  border-top-color: var(--foreground) !important;
+  background: var(--foreground) !important;
+}
+
+/* Dark mode: invert map tiles */
+.dark .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(0.95) contrast(0.9);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+  }
+
+  .animate-fade-up {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .animate-hero-line {
+    opacity: 1;
+    animation: none;
+  }
+}
