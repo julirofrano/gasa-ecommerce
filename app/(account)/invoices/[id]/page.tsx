@@ -50,12 +50,20 @@ function getPaymentStateVariant(
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params;
-  const invoice = await getInvoiceById(Number(id));
-  return {
-    title: invoice ? invoice.name : `Factura #${id}`,
-    robots: { index: false, follow: false },
-  };
+  try {
+    const { id } = await params;
+    const invoice = await getInvoiceById(Number(id));
+    return {
+      title: invoice ? invoice.name : `Factura #${id}`,
+      robots: { index: false, follow: false },
+    };
+  } catch {
+    const { id } = await params;
+    return {
+      title: `Factura #${id}`,
+      robots: { index: false, follow: false },
+    };
+  }
 }
 
 export default async function InvoiceDetailPage({ params }: Props) {

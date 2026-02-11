@@ -14,22 +14,26 @@ export interface CustomerContainerInfo {
 export async function getCustomerContainersForProduct(
   productId: number,
 ): Promise<CustomerContainerInfo[]> {
-  const session = await auth();
-  if (!session?.user?.partnerId) return [];
+  try {
+    const session = await auth();
+    if (!session?.user?.partnerId) return [];
 
-  const containers = await getContainers(session.user.partnerId);
+    const containers = await getContainers(session.user.partnerId);
 
-  return containers
-    .filter(
-      (c) =>
-        Array.isArray(c.associated_product) &&
-        c.associated_product[0] === productId,
-    )
-    .map((c) => ({
-      id: c.id,
-      serial_number: c.serial_number,
-      container_capacity: c.container_capacity,
-      gas_type: c.gas_type,
-      status: c.status,
-    }));
+    return containers
+      .filter(
+        (c) =>
+          Array.isArray(c.associated_product) &&
+          c.associated_product[0] === productId,
+      )
+      .map((c) => ({
+        id: c.id,
+        serial_number: c.serial_number,
+        container_capacity: c.container_capacity,
+        gas_type: c.gas_type,
+        status: c.status,
+      }));
+  } catch {
+    return [];
+  }
 }

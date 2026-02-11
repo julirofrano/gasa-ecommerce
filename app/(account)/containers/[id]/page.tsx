@@ -23,7 +23,7 @@ interface Props {
 }
 
 function getContainerStatusVariant(
-  status: OdooContainer["status"],
+  status: string,
 ): "default" | "accent" | "muted" {
   switch (status) {
     case "in_use":
@@ -38,15 +38,23 @@ function getContainerStatusVariant(
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params;
-  const container = await getContainerById(Number(id));
-  const name = container
-    ? container.serial_number || container.display_name
-    : `Envase #${id}`;
-  return {
-    title: name,
-    robots: { index: false, follow: false },
-  };
+  try {
+    const { id } = await params;
+    const container = await getContainerById(Number(id));
+    const name = container
+      ? container.serial_number || container.display_name
+      : `Envase #${id}`;
+    return {
+      title: name,
+      robots: { index: false, follow: false },
+    };
+  } catch {
+    const { id } = await params;
+    return {
+      title: `Envase #${id}`,
+      robots: { index: false, follow: false },
+    };
+  }
 }
 
 export default async function ContainerDetailPage({ params }: Props) {
@@ -78,7 +86,7 @@ export default async function ContainerDetailPage({ params }: Props) {
     notFound();
   }
 
-  let displayStatus = container.status;
+  let displayStatus: string = container.status;
   let displayLocation = container.effective_location;
   let ownershipLabel: string;
 

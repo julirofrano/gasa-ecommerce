@@ -20,37 +20,48 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const category = await getShopCategoryBySlug(slug);
-  if (!category) return { title: "Categoría no encontrada" };
+  try {
+    const { slug } = await params;
+    const category = await getShopCategoryBySlug(slug);
+    if (!category) return { title: "Categoría no encontrada" };
 
-  const title = category.name;
-  const description = `Catálogo de ${category.name.toLowerCase()} de Gases Aconcagua S.A.`;
+    const title = category.name;
+    const description = `Catálogo de ${category.name.toLowerCase()} de Gases Aconcagua S.A.`;
 
-  return {
-    title,
-    description,
-    alternates: { canonical: `/categories/${slug}` },
-    openGraph: {
+    return {
       title,
       description,
-      type: "website",
-      url: `/categories/${slug}`,
-    },
-  };
+      alternates: { canonical: `/categories/${slug}` },
+      openGraph: {
+        title,
+        description,
+        type: "website",
+        url: `/categories/${slug}`,
+      },
+    };
+  } catch {
+    return { title: "Categoría" };
+  }
 }
 
 export default async function CategoryPage({ params, searchParams }: Props) {
   const { slug } = await params;
   const { page } = await searchParams;
 
-  const [category, categories] = await Promise.all([
-    getShopCategoryBySlug(slug),
-    getShopCategories(),
-  ]);
-  if (!category) notFound();
+  let category;
+  let categories;
+  let totalProducts;
+  try {
+    [category, categories] = await Promise.all([
+      getShopCategoryBySlug(slug),
+      getShopCategories(),
+    ]);
+    if (!category) notFound();
+    totalProducts = await getShopProductCount(category.id);
+  } catch {
+    notFound();
+  }
 
-  const totalProducts = await getShopProductCount(category.id);
   const currentPage = Math.max(1, Number(page) || 1);
   const totalPages = Math.max(1, Math.ceil(totalProducts / PRODUCTS_PER_PAGE));
   const safePage = Math.min(currentPage, totalPages);

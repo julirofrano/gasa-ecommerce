@@ -15,27 +15,31 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const product = await getShopProductBySlug(slug);
-  if (!product) return { title: "Producto no encontrado" };
+  try {
+    const { slug } = await params;
+    const product = await getShopProductBySlug(slug);
+    if (!product) return { title: "Producto no encontrado" };
 
-  const title = product.metaTitle || product.name;
-  const description = product.metaDescription || product.description;
-  const path = `/products/${product.slug}`;
+    const title = product.metaTitle || product.name;
+    const description = product.metaDescription || product.description;
+    const path = `/products/${product.slug}`;
 
-  return {
-    title,
-    description,
-    ...(product.metaKeywords && { keywords: product.metaKeywords }),
-    alternates: { canonical: path },
-    openGraph: {
+    return {
       title,
       description,
-      type: "article",
-      url: path,
-      ...(product.imageUrl && { images: [{ url: product.imageUrl }] }),
-    },
-  };
+      ...(product.metaKeywords && { keywords: product.metaKeywords }),
+      alternates: { canonical: path },
+      openGraph: {
+        title,
+        description,
+        type: "article",
+        url: path,
+        ...(product.imageUrl && { images: [{ url: product.imageUrl }] }),
+      },
+    };
+  } catch {
+    return { title: "Producto" };
+  }
 }
 
 function ProductJsonLd({ product }: { product: Product }) {

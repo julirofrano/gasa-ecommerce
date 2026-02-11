@@ -21,15 +21,18 @@ export class OdooClient {
     this.db = process.env.ODOO_DB || "";
     this.username = process.env.ODOO_USERNAME || "";
     this.password = process.env.ODOO_PASSWORD || "";
+  }
 
+  private ensureConfig(): void {
     if (!this.url || !this.db || !this.username || !this.password) {
-      throw new Error(
+      throw new OdooConnectionError(
         "Odoo configuration missing. Check ODOO_URL, ODOO_DB, ODOO_USERNAME, ODOO_PASSWORD environment variables.",
       );
     }
   }
 
   async authenticate(): Promise<OdooAuthResponse> {
+    this.ensureConfig();
     const response = await this.safeFetch(
       `${this.url}/web/session/authenticate`,
       {
@@ -86,6 +89,7 @@ export class OdooClient {
     args: unknown[] = [],
     kwargs: Record<string, unknown> = {},
   ): Promise<T> {
+    this.ensureConfig();
     if (!this.uid) {
       await this.authenticate();
     }
@@ -213,6 +217,7 @@ export class OdooClient {
     reportName: string,
     recordId: number,
   ): Promise<ArrayBuffer> {
+    this.ensureConfig();
     // Authenticate to obtain a session cookie
     const authRes = await this.safeFetch(
       `${this.url}/web/session/authenticate`,

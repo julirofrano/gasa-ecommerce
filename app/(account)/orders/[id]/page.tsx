@@ -56,12 +56,20 @@ function getTransferStateVariant(
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params;
-  const order = await getOrderById(Number(id));
-  return {
-    title: order ? order.name : `Pedido #${id}`,
-    robots: { index: false, follow: false },
-  };
+  try {
+    const { id } = await params;
+    const order = await getOrderById(Number(id));
+    return {
+      title: order ? order.name : `Pedido #${id}`,
+      robots: { index: false, follow: false },
+    };
+  } catch {
+    const { id } = await params;
+    return {
+      title: `Pedido #${id}`,
+      robots: { index: false, follow: false },
+    };
+  }
 }
 
 export default async function OrderDetailPage({ params }: Props) {
