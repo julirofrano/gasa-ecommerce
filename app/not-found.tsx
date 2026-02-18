@@ -26,7 +26,7 @@ export default function NotFound() {
             <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
               Error
             </p>
-            <p className="mt-1 text-xs font-bold uppercase tracking-widest text-[#0094BB]">
+            <p className="mt-1 text-xs font-bold uppercase tracking-widest text-accent">
               Página No Encontrada
             </p>
 
@@ -37,7 +37,7 @@ export default function NotFound() {
               </h1>
 
               {/* Accent stripe cutting through the number */}
-              <div className="absolute bottom-[38%] left-0 h-2 w-full bg-[#0094BB] md:h-3" />
+              <div className="absolute bottom-[38%] left-0 h-2 w-full bg-accent md:h-3" />
             </div>
 
             {/* ── Divider ────────────────────────────────── */}
@@ -63,7 +63,7 @@ export default function NotFound() {
               <div className="flex flex-col gap-3 sm:flex-row">
                 <Link
                   href={ROUTES.HOME}
-                  className="border-2 border-foreground bg-foreground px-8 py-4 text-center text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-[#0094BB] hover:bg-[#0094BB]"
+                  className="border-2 border-foreground bg-foreground px-8 py-4 text-center text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-accent hover:bg-accent"
                 >
                   Ir al Inicio
                 </Link>
@@ -103,7 +103,7 @@ export default function NotFound() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="group bg-background p-5 transition-colors duration-200 hover:bg-[#0094BB] hover:text-background md:p-6"
+                  className="group bg-background p-5 transition-colors duration-200 hover:bg-accent hover:text-background md:p-6"
                 >
                   <span className="block text-[10px] font-bold uppercase tracking-widest text-muted-foreground transition-colors duration-200 group-hover:text-background/50">
                     {item.number}

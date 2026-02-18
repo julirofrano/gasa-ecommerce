@@ -1,3 +1,8 @@
+export const AUTH_ENABLED = process.env.NEXT_PUBLIC_AUTH_ENABLED !== "false";
+export const ODOO_ENABLED = process.env.NEXT_PUBLIC_ODOO_ENABLED !== "false";
+
+export const ACCENT_COLOR = "#0094BB";
+
 export const APP_NAME = "GASA";
 export const APP_DESCRIPTION =
   "Gases Aconcagua S.A. - Tienda en línea y portal de clientes";
@@ -18,6 +23,7 @@ export const ROUTES = {
   ACCOUNT_ORDERS: "/orders",
   ACCOUNT_CONTAINERS: "/containers",
   ACCOUNT_INVOICES: "/invoices",
+  ACCOUNT_RETURNS: "/returns",
   ABOUT: "/about",
   INDUSTRIES: "/industries",
   SERVICES: "/services",
@@ -27,7 +33,6 @@ export const ROUTES = {
   SERVICES_HOME_CARE: "/services/home-care",
   SERVICES_ICE_PELLETS: "/services/ice-pellets",
   CONTACT: "/contact",
-  CERTIFICATES: "/certificates",
   ETHICS: "/ethics",
   SEARCH: "/search",
 } as const;

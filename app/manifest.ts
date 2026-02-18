@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { ACCENT_COLOR } from "@/lib/utils/constants";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
@@ -9,7 +10,7 @@ export default function manifest(): MetadataRoute.Manifest {
     start_url: "/",
     display: "standalone",
     background_color: "#FFFFFF",
-    theme_color: "#0094BB",
+    theme_color: ACCENT_COLOR,
     icons: [
       {
         src: "/favicon.ico",

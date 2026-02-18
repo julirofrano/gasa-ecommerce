@@ -6,7 +6,7 @@ import { X, ChevronDown, LogOut } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import { useUIStore } from "@/stores/ui-store";
 import { useCartStore } from "@/stores/cart-store";
-import { ROUTES } from "@/lib/utils/constants";
+import { AUTH_ENABLED, ROUTES } from "@/lib/utils/constants";
 
 interface MobileNavItem {
   href: string;
@@ -39,10 +39,10 @@ const mainItems: MobileNavItem[] = [
 ];
 
 const accountItems = [
-  { href: ROUTES.ACCOUNT_PROFILE, label: "Mi Cuenta" },
-  { href: ROUTES.ACCOUNT_ORDERS, label: "Mis Pedidos" },
-  { href: ROUTES.ACCOUNT_CONTAINERS, label: "Mis Envases" },
-  { href: ROUTES.CART, label: "Carrito" },
+  { href: ROUTES.ACCOUNT_PROFILE, label: "Mi Cuenta", requiresAuth: true },
+  { href: ROUTES.ACCOUNT_ORDERS, label: "Mis Pedidos", requiresAuth: true },
+  { href: ROUTES.ACCOUNT_CONTAINERS, label: "Mis Envases", requiresAuth: true },
+  { href: ROUTES.CART, label: "Carrito", requiresAuth: false },
 ];
 
 function MobileNavGroup({
@@ -59,7 +59,7 @@ function MobileNavGroup({
       <Link
         href={item.href}
         onClick={onNavigate}
-        className="block border-b border-background/10 py-4 text-2xl font-black uppercase tracking-tight transition-colors duration-200 hover:text-[#0094BB]"
+        className="block border-b border-background/10 py-4 text-2xl font-black uppercase tracking-tight transition-colors duration-200 hover:text-accent"
       >
         {item.label}
       </Link>
@@ -70,7 +70,7 @@ function MobileNavGroup({
     <div className="border-b border-background/10">
       <button
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between py-4 text-2xl font-black uppercase tracking-tight transition-colors duration-200 hover:text-[#0094BB]"
+        className="flex w-full items-center justify-between py-4 text-2xl font-black uppercase tracking-tight transition-colors duration-200 hover:text-accent"
       >
         {item.label}
         <ChevronDown
@@ -78,13 +78,13 @@ function MobileNavGroup({
         />
       </button>
       {open && (
-        <div className="mb-4 ml-4 border-l-2 border-[#0094BB] pl-4">
+        <div className="mb-4 ml-4 border-l-2 border-accent pl-4">
           {item.children.map((child) => (
             <Link
               key={child.href}
               href={child.href}
               onClick={onNavigate}
-              className="block py-2 text-sm font-bold uppercase tracking-wide text-background/70 transition-colors duration-200 hover:text-[#0094BB]"
+              className="block py-2 text-sm font-bold uppercase tracking-wide text-background/70 transition-colors duration-200 hover:text-accent"
             >
               {child.label}
             </Link>
@@ -106,12 +106,12 @@ export function MobileNav() {
     <div className="fixed inset-0 z-[60] overflow-y-auto bg-foreground text-background md:hidden">
       {/* ── Top Bar ──────────────────────────────────────── */}
       <div className="flex items-center justify-between border-b border-background/10 px-4 py-4">
-        <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+        <p className="text-xs font-bold uppercase tracking-[0.3em] text-accent">
           Menú
         </p>
         <button
           onClick={closeMobileMenu}
-          className="p-2 transition-colors duration-200 hover:text-[#0094BB]"
+          className="p-2 transition-colors duration-200 hover:text-accent"
           aria-label="Cerrar menú"
         >
           <X className="h-6 w-6" />
@@ -147,16 +147,18 @@ export function MobileNav() {
               )}
             </div>
           )}
-          {accountItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={closeMobileMenu}
-              className="block border-b border-background/10 py-3 text-sm font-bold uppercase tracking-wide text-background/70 transition-colors duration-200 hover:text-[#0094BB]"
-            >
-              {item.label}
-            </Link>
-          ))}
+          {accountItems
+            .filter((item) => !item.requiresAuth || AUTH_ENABLED)
+            .map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={closeMobileMenu}
+                className="block border-b border-background/10 py-3 text-sm font-bold uppercase tracking-wide text-background/70 transition-colors duration-200 hover:text-accent"
+              >
+                {item.label}
+              </Link>
+            ))}
           {session?.user && (
             <button
               onClick={() => {
@@ -178,13 +180,13 @@ export function MobileNav() {
         <div className="flex flex-col gap-2">
           <a
             href="tel:+5492613691623"
-            className="text-sm text-background/50 transition-colors duration-200 hover:text-[#0094BB]"
+            className="text-sm text-background/50 transition-colors duration-200 hover:text-accent"
           >
             +54 9 261 369-1623
           </a>
           <a
             href="mailto:consultas@gasesaconcagua.com.ar"
-            className="text-sm text-background/50 transition-colors duration-200 hover:text-[#0094BB]"
+            className="text-sm text-background/50 transition-colors duration-200 hover:text-accent"
           >
             consultas@gasesaconcagua.com.ar
           </a>

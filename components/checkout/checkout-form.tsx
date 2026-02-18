@@ -7,6 +7,7 @@ import { useUIStore } from "@/stores/ui-store";
 import { ROUTES } from "@/lib/utils/constants";
 import {
   validateCUIT,
+  formatCUIT,
   validateEmail,
   validatePhone,
 } from "@/lib/utils/validation";
@@ -68,14 +69,14 @@ const CONDICION_IVA_LABELS: Record<string, string> = {
 };
 
 const inputClass =
-  "w-full border-b-2 border-foreground bg-transparent px-0 py-3 text-sm focus:border-[#0094BB] focus:outline-none";
+  "w-full border-b-2 border-foreground bg-transparent px-0 py-3 text-sm focus:border-accent focus:outline-none";
 const labelClass = "mb-2 block text-xs font-bold uppercase tracking-widest";
 const errorClass = "mt-1 text-xs text-red-600";
 
 function SectionHeading({ number, title }: { number: string; title: string }) {
   return (
     <div className="mb-6 border-b-2 border-foreground pb-4">
-      <p className="text-[10px] font-bold uppercase tracking-widest text-[#0094BB]">
+      <p className="text-[10px] font-bold uppercase tracking-widest text-accent">
         {number}
       </p>
       <h2 className="mt-1 text-lg font-black uppercase tracking-tight">
@@ -114,7 +115,8 @@ export function CheckoutForm({ prefill, branches }: CheckoutFormProps) {
     }
   }, [items.length, router]);
 
-  // Determine which billing fields are locked (have data from Odoo)
+  // Determine which fields are locked (have data from Odoo / logged-in user)
+  const emailIsLocked = !!prefill?.email;
   const nameIsLocked = !!prefill?.name;
   const vatIsLocked = !!prefill?.vat;
   const condicionIvaIsLocked = !!prefill?.condicionIva;
@@ -133,7 +135,7 @@ export function CheckoutForm({ prefill, branches }: CheckoutFormProps) {
   const [email, setEmail] = useState(prefill?.email || "");
   const [phone, setPhone] = useState(prefill?.phone || "");
   const [name, setName] = useState(prefill?.name || "");
-  const [vat, setVat] = useState(prefill?.vat || "");
+  const [vat, setVat] = useState(prefill?.vat ? formatCUIT(prefill.vat) : "");
   const [condicionIva, setCondicionIva] = useState<CondicionIva | "">(
     prefill?.condicionIva || "",
   );
@@ -194,6 +196,16 @@ export function CheckoutForm({ prefill, branches }: CheckoutFormProps) {
   const usingSavedShipping =
     hasShippingAddresses && selectedShippingId !== "new";
   const usingSavedBilling = hasInvoiceAddresses && selectedBillingId !== "new";
+
+  function handleVatChange(raw: string) {
+    const digits = raw.replace(/\D/g, "").slice(0, 11);
+    let masked = digits;
+    if (digits.length > 2) masked = digits.slice(0, 2) + "-" + digits.slice(2);
+    if (digits.length > 10)
+      masked =
+        digits.slice(0, 2) + "-" + digits.slice(2, 10) + "-" + digits.slice(10);
+    setVat(masked);
+  }
 
   function validateField(field: string, value: string): string | null {
     switch (field) {
@@ -414,6 +426,8 @@ export function CheckoutForm({ prefill, branches }: CheckoutFormProps) {
       // Prefill-specific fields
       existingPartnerId: prefill?.partnerId,
       existingCompanyId: prefill?.companyId,
+      saveVat: !vatIsLocked,
+      saveCondicionIva: !condicionIvaIsLocked,
       shippingAddressId: usingSavedShipping
         ? (selectedShippingId as number)
         : undefined,
@@ -457,20 +471,26 @@ export function CheckoutForm({ prefill, branches }: CheckoutFormProps) {
         <SectionHeading number="01" title="Contacto" />
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
           <div>
-            <label htmlFor="email" className={labelClass}>
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              onBlur={() => handleBlur("email", email)}
-              placeholder="nombre@empresa.com"
-              className={inputClass}
-              required
-            />
-            {fieldError("email")}
+            {emailIsLocked ? (
+              <ReadOnlyField label="Email" value={email} />
+            ) : (
+              <>
+                <label htmlFor="email" className={labelClass}>
+                  Email
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onBlur={() => handleBlur("email", email)}
+                  placeholder="nombre@empresa.com"
+                  className={inputClass}
+                  required
+                />
+                {fieldError("email")}
+              </>
+            )}
           </div>
           <div>
             <label htmlFor="phone" className={labelClass}>
@@ -522,7 +542,7 @@ export function CheckoutForm({ prefill, branches }: CheckoutFormProps) {
           {/* VAT: read-only if prefilled */}
           <div>
             {vatIsLocked ? (
-              <ReadOnlyField label="CUIT / CUIL" value={vat} />
+              <ReadOnlyField label="CUIT / CUIL" value={formatCUIT(vat)} />
             ) : (
               <>
                 <label htmlFor="vat" className={labelClass}>
@@ -531,10 +551,12 @@ export function CheckoutForm({ prefill, branches }: CheckoutFormProps) {
                 <input
                   id="vat"
                   type="text"
+                  inputMode="numeric"
                   value={vat}
-                  onChange={(e) => setVat(e.target.value)}
+                  onChange={(e) => handleVatChange(e.target.value)}
                   onBlur={() => handleBlur("vat", vat)}
                   placeholder="XX-XXXXXXXX-X"
+                  maxLength={13}
                   className={inputClass}
                   required
                 />
@@ -605,7 +627,7 @@ export function CheckoutForm({ prefill, branches }: CheckoutFormProps) {
 
       {/* 03. Dirección de Envío */}
       <section className="border-2 border-foreground p-6 md:border-4 md:p-8">
-        <SectionHeading number="03" title="Dirección de Envío" />
+        <SectionHeading number="03" title="Dirección" />
 
         {hasShippingAddresses ? (
           <>
@@ -650,7 +672,7 @@ export function CheckoutForm({ prefill, branches }: CheckoutFormProps) {
             type="checkbox"
             checked={sameBillingAddress}
             onChange={(e) => setSameBillingAddress(e.target.checked)}
-            className="h-4 w-4 accent-[#0094BB]"
+            className="h-4 w-4 accent-accent"
           />
           <span className="text-sm font-bold">
             Usar misma dirección para facturación
@@ -804,6 +826,7 @@ export function CheckoutForm({ prefill, branches }: CheckoutFormProps) {
               state={shippingState}
               zip={shippingZip}
               country="Argentina"
+              autoGeocode
               onCoordsCapture={(lat, lng) => {
                 setShippingLat(lat);
                 setShippingLng(lng);
@@ -911,6 +934,7 @@ export function CheckoutForm({ prefill, branches }: CheckoutFormProps) {
               state={billingState}
               zip={billingZip}
               country="Argentina"
+              autoGeocode
               onCoordsCapture={(lat, lng) => {
                 setBillingLat(lat);
                 setBillingLng(lng);

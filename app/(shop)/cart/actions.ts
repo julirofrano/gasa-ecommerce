@@ -12,6 +12,7 @@ interface CartItemInfo {
   productId: number;
   productType?: string;
   variantId?: number;
+  containerCapacity?: number;
 }
 
 interface RefreshResult {
@@ -79,6 +80,11 @@ export async function refreshCartPrices(
       }
 
       if (item.productType === "gas") {
+        // Gas container: use containerCapacity directly
+        if (item.containerCapacity && item.cartKey.includes("-container-")) {
+          prices[item.cartKey] = unitPrice * item.containerCapacity;
+          continue;
+        }
         // Gas preset: find capacity from GAS_PRODUCT_DATA
         const gasData = GAS_PRODUCT_DATA[item.productId];
         if (gasData && item.variantId) {

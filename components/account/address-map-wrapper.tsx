@@ -22,6 +22,8 @@ interface AddressMapWrapperProps {
   savedLat?: number;
   savedLng?: number;
   onCoordsCapture?: (lat: number, lng: number) => void;
+  /** Automatically geocode and show the map when enough address info is available. */
+  autoGeocode?: boolean;
 }
 
 export function AddressMapWrapper({
@@ -34,6 +36,7 @@ export function AddressMapWrapper({
   savedLat,
   savedLng,
   onCoordsCapture,
+  autoGeocode = false,
 }: AddressMapWrapperProps) {
   const [open, setOpen] = useState(false);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
@@ -98,6 +101,17 @@ export function AddressMapWrapper({
     }
   }, [open, addressKey, doGeocode]);
 
+  // Auto-geocode with debounce when address changes
+  useEffect(() => {
+    if (!autoGeocode || !addressKey || persisted) return;
+    if (geocodedKey.current === addressKey) return;
+    const timer = setTimeout(() => {
+      doGeocode();
+    }, 800);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoGeocode, addressKey]);
+
   const handleCoordsChange = useCallback(
     async (lat: number, lng: number) => {
       setCoords({ lat, lng });
@@ -123,15 +137,61 @@ export function AddressMapWrapper({
 
   const addressLabel = [street, city].filter(Boolean).join(", ");
 
+  // Show inline map once we have coordinates (even when modal is closed)
+  const showInline = !!coords && !loading;
+
   return (
     <>
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="text-xs font-bold uppercase tracking-wide text-[#0094BB] hover:text-foreground"
-      >
-        {persisted ? "Ver Mapa" : "+ Ubicacion"}
-      </button>
+      {!showInline && !autoGeocode && (
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="text-xs font-bold uppercase tracking-wide text-accent hover:underline"
+        >
+          + Ubicacion
+        </button>
+      )}
+
+      {autoGeocode && loading && (
+        <div className="mt-2 flex h-48 w-full items-center justify-center border-2 border-foreground bg-muted">
+          <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">
+            Cargando mapa...
+          </p>
+        </div>
+      )}
+
+      {showInline && !open && (
+        <div className="mt-2">
+          <div className="relative h-48 w-full border-2 border-foreground">
+            <AddressMap
+              lat={coords.lat}
+              lng={coords.lng}
+              label={addressLabel}
+              draggable={autoGeocode}
+              onCoordsChange={autoGeocode ? handleCoordsChange : undefined}
+            />
+            {!autoGeocode && (
+              <button
+                type="button"
+                onClick={() => setOpen(true)}
+                className="absolute bottom-2 right-2 z-[1000] border-2 border-foreground bg-background px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-foreground transition-colors hover:bg-foreground hover:text-background"
+              >
+                Ajustar
+              </button>
+            )}
+            {autoGeocode && (
+              <p className="absolute bottom-2 left-2 z-[1000] bg-background/80 px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                Arrastra el pin para ajustar
+              </p>
+            )}
+          </div>
+          {saving && (
+            <span className="mt-1 block text-[10px] font-bold uppercase tracking-widest text-accent">
+              Guardando...
+            </span>
+          )}
+        </div>
+      )}
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8">
@@ -150,7 +210,7 @@ export function AddressMapWrapper({
             {/* Header */}
             <div className="flex items-center justify-between border-b-2 border-foreground px-4 py-3 md:px-6">
               <div>
-                <h3 className="text-xs font-bold uppercase tracking-widest text-[#0094BB]">
+                <h3 className="text-xs font-bold uppercase tracking-widest text-accent">
                   Ubicacion
                 </h3>
                 <p className="mt-0.5 text-sm text-muted-foreground">
@@ -201,7 +261,7 @@ export function AddressMapWrapper({
                     type="button"
                     onClick={handleSaveInitial}
                     disabled={saving}
-                    className="border-2 border-foreground bg-foreground px-4 py-1 text-xs font-bold uppercase tracking-wide text-background transition-colors hover:border-[#0094BB] hover:bg-[#0094BB] disabled:opacity-50"
+                    className="border-2 border-foreground bg-foreground px-4 py-1 text-xs font-bold uppercase tracking-wide text-background transition-colors hover:border-accent hover:bg-accent disabled:opacity-50"
                   >
                     Guardar Ubicacion
                   </button>
@@ -210,7 +270,7 @@ export function AddressMapWrapper({
                   Arrastra el pin para ajustar la ubicacion
                 </p>
                 {saving && (
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-[#0094BB]">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-accent">
                     Guardando...
                   </span>
                 )}

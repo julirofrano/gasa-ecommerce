@@ -13,7 +13,7 @@ export default function ForgotPasswordPage() {
   return (
     <div>
       {/* ── Header ───────────────────────────────────────── */}
-      <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+      <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent">
         Recuperación — Acceso
       </p>
       <h1 className="text-4xl font-black uppercase tracking-tighter md:text-5xl">
@@ -39,14 +39,14 @@ export default function ForgotPasswordPage() {
             id="email"
             type="email"
             placeholder="correo@empresa.com"
-            className="w-full border-b-2 border-foreground bg-transparent px-0 py-3 text-sm placeholder:text-muted-foreground focus:border-[#0094BB] focus:outline-none"
+            className="w-full border-b-2 border-foreground bg-transparent px-0 py-3 text-sm placeholder:text-muted-foreground focus:border-accent focus:outline-none"
             required
           />
         </div>
 
         <button
           type="submit"
-          className="w-full border-2 border-foreground bg-foreground px-6 py-4 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-[#0094BB] hover:bg-[#0094BB]"
+          className="w-full border-2 border-foreground bg-foreground px-6 py-4 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-accent hover:bg-accent"
         >
           Enviar Instrucciones
         </button>
@@ -58,7 +58,7 @@ export default function ForgotPasswordPage() {
           ¿Recordó su contraseña?{" "}
           <Link
             href={ROUTES.LOGIN}
-            className="text-xs font-bold uppercase tracking-wide text-[#0094BB] transition-colors duration-200 hover:text-foreground"
+            className="text-xs font-bold uppercase tracking-wide text-accent transition-colors duration-200 hover:text-foreground"
           >
             Iniciar Sesión
           </Link>

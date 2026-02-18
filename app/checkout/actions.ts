@@ -1,6 +1,6 @@
 "use server";
 
-import type { CheckoutData, CartItem } from "@/types";
+import type { CheckoutData, CartItem, Address, DeliveryMethod } from "@/types";
 import { auth } from "@/auth";
 import {
   validateCUIT,
@@ -11,6 +11,8 @@ import {
   createPartner,
   createPartnerAddress,
   updatePartner,
+  getPartner,
+  getPartnerAddresses,
   getArgentinaCountryId,
   getStateId,
   CONDICION_IVA_MAP,
@@ -20,6 +22,17 @@ import { createPreference } from "@/lib/mercadopago/preferences";
 import { getDeliveryMethodLabel, classifyCartItems } from "@/lib/data/delivery";
 import { getBranchById } from "@/lib/odoo/branches";
 import { refreshCartPrices } from "@/app/(shop)/cart/actions";
+import {
+  getWarehouseByCompanyId,
+  findNearestWarehouseId,
+} from "@/lib/odoo/warehouses";
+import { geocodeAddress } from "@/lib/geocoding/nominatim";
+import {
+  setPartnerPassword,
+  setPortalActive,
+  generateSignupToken,
+} from "@/lib/odoo/portal";
+import { sendWelcomeEmail } from "@/lib/email/send";
 
 /** Convert cart items to Odoo order lines. Gas items with containerCapacity
  *  send total gas quantity (capacity × containers) and price per unit of measure.
@@ -120,6 +133,47 @@ function validateCheckoutData(data: CheckoutData): Record<string, string> {
   return errors;
 }
 
+async function resolveWarehouseId(
+  deliveryMethod: DeliveryMethod,
+  branchId: number | undefined,
+  shippingAddress: Address,
+): Promise<number | undefined> {
+  try {
+    if (deliveryMethod === "branch_pickup" && branchId) {
+      const whId = await getWarehouseByCompanyId(branchId);
+      return whId ?? undefined;
+    }
+
+    // For own_delivery / carrier_delivery: find nearest warehouse to shipping address
+    let lat = shippingAddress.lat;
+    let lng = shippingAddress.lng;
+
+    if (!lat || !lng) {
+      const geo = await geocodeAddress({
+        street: shippingAddress.street,
+        city: shippingAddress.city,
+        state: shippingAddress.state,
+        zip: shippingAddress.zipCode,
+        country: "Argentina",
+      });
+      if (geo) {
+        lat = geo.lat;
+        lng = geo.lng;
+      }
+    }
+
+    if (lat && lng) {
+      const whId = await findNearestWarehouseId(lat, lng);
+      return whId ?? undefined;
+    }
+
+    return undefined;
+  } catch (error) {
+    console.error("Warehouse resolution failed, using Odoo default:", error);
+    return undefined;
+  }
+}
+
 export async function submitCheckout(
   data: CheckoutData,
   cartItems: CartItem[],
@@ -142,6 +196,21 @@ export async function submitCheckout(
     if (data.existingPartnerId) {
       // ── Logged-in path: use existing partner, skip partner creation ──
       partnerId = data.existingCompanyId ?? data.existingPartnerId;
+
+      // Save fiscal data to commercial partner if newly entered at checkout
+      const fiscalUpdate: Record<string, unknown> = {};
+      if (data.saveVat && data.vat) {
+        fiscalUpdate.vat = data.vat.replace(/\D/g, "");
+      }
+      if (data.saveCondicionIva && data.condicionIva) {
+        const afipTypeId = CONDICION_IVA_MAP[data.condicionIva];
+        if (afipTypeId) {
+          fiscalUpdate.l10n_ar_afip_responsibility_type_id = afipTypeId;
+        }
+      }
+      if (Object.keys(fiscalUpdate).length > 0) {
+        await updatePartner(partnerId, fiscalUpdate);
+      }
 
       // Shipping address
       if (data.shippingAddressId) {
@@ -200,8 +269,75 @@ export async function submitCheckout(
           });
         }
       }
-      // If no billingAddressId and no billingAddress, invoiceAddressId stays
-      // undefined and Odoo defaults to the partner itself.
+      // "Same as shipping" — create/reuse an invoice-type address so it
+      // appears on the profile and is available for future checkouts.
+      if (!invoiceAddressId) {
+        const existingInvoice = await getPartnerAddresses(partnerId, "invoice");
+
+        if (data.shippingAddressId) {
+          // Saved shipping address — read it for matching / copying
+          const shipAddr = await getPartner(data.shippingAddressId);
+          const match = shipAddr
+            ? existingInvoice.find(
+                (a) => a.street === shipAddr.street && a.city === shipAddr.city,
+              )
+            : undefined;
+
+          if (match) {
+            invoiceAddressId = match.id;
+          } else if (shipAddr) {
+            invoiceAddressId = await createPartnerAddress(
+              partnerId,
+              "invoice",
+              {
+                name: shipAddr.name,
+                street: shipAddr.street || "",
+                street2: shipAddr.street2 || undefined,
+                city: shipAddr.city || "",
+                stateId: shipAddr.state_id ? shipAddr.state_id[0] : undefined,
+                countryId: shipAddr.country_id
+                  ? shipAddr.country_id[0]
+                  : undefined,
+                zip: shipAddr.zip || "",
+                phone: shipAddr.phone || undefined,
+              },
+            );
+          } else {
+            // Fallback if the address read fails
+            invoiceAddressId = shippingAddressId;
+          }
+        } else {
+          // New shipping address — use the form data
+          const match = existingInvoice.find(
+            (a) =>
+              a.street === data.shippingAddress.street &&
+              a.city === data.shippingAddress.city,
+          );
+
+          if (match) {
+            invoiceAddressId = match.id;
+          } else {
+            const countryId = await getArgentinaCountryId();
+            const stateId = countryId
+              ? await getStateId(data.shippingAddress.state, countryId)
+              : null;
+            invoiceAddressId = await createPartnerAddress(
+              partnerId,
+              "invoice",
+              {
+                name: data.name,
+                street: data.shippingAddress.street,
+                street2: data.shippingAddress.street2,
+                city: data.shippingAddress.city,
+                stateId: stateId ?? undefined,
+                countryId: countryId ?? undefined,
+                zip: data.shippingAddress.zipCode,
+                phone: data.phone,
+              },
+            );
+          }
+        }
+      }
     } else {
       // ── Guest path: create new partner (existing logic) ──
       const countryId = await getArgentinaCountryId();
@@ -271,6 +407,7 @@ export async function submitCheckout(
     // 5. Re-fetch prices server-side — never trust client-provided prices
     const session = await auth();
     const pricelistId = session?.user?.pricelistId ?? undefined;
+    const sessionWarehouseId = session?.user?.warehouseId ?? undefined;
 
     const serverPrices = await refreshCartPrices(
       cartItems.map((item) => ({
@@ -278,6 +415,7 @@ export async function submitCheckout(
         productId: item.productId,
         productType: item.productType,
         variantId: item.variantId,
+        containerCapacity: item.containerCapacity,
       })),
     );
 
@@ -291,6 +429,13 @@ export async function submitCheckout(
 
     if (shouldSplit) {
       // ── Split into 2 separate Odoo orders ──
+      const gasWarehouseId =
+        sessionWarehouseId ??
+        (await resolveWarehouseId(
+          data.deliveryMethod,
+          data.deliveryBranchId,
+          data.shippingAddress,
+        ));
       const gasNotes = await buildDeliveryNotes(data, ownDelivery, "gas");
       const gasFullNotes = [data.notes, gasNotes].filter(Boolean).join("\n\n");
       const gasLines = toOrderLines(ownDelivery, serverPrices.prices);
@@ -301,8 +446,19 @@ export async function submitCheckout(
         gasFullNotes || undefined,
         pricelistId,
         invoiceAddressId,
+        gasWarehouseId,
       );
 
+      const supplyMethod = data.carrierDeliveryMethod ?? data.deliveryMethod;
+      const supplyBranchId =
+        data.carrierDeliveryBranchId ?? data.deliveryBranchId;
+      const supplyWarehouseId =
+        sessionWarehouseId ??
+        (await resolveWarehouseId(
+          supplyMethod,
+          supplyBranchId,
+          data.shippingAddress,
+        ));
       const supplyNotes = await buildDeliveryNotes(
         data,
         carrierDelivery,
@@ -319,11 +475,19 @@ export async function submitCheckout(
         supplyFullNotes || undefined,
         pricelistId,
         invoiceAddressId,
+        supplyWarehouseId,
       );
 
       externalReference = `orders_${gasOrderId}_${supplyOrderId}`;
     } else {
       // ── Single order (pure cart or both use same delivery) ──
+      const warehouseId =
+        sessionWarehouseId ??
+        (await resolveWarehouseId(
+          data.deliveryMethod,
+          data.deliveryBranchId,
+          data.shippingAddress,
+        ));
       const orderLines = toOrderLines(cartItems, serverPrices.prices);
       const deliveryNotes = await buildDeliveryNotes(data, cartItems);
       const fullNotes = [data.notes, deliveryNotes]
@@ -337,6 +501,7 @@ export async function submitCheckout(
         fullNotes || undefined,
         pricelistId,
         invoiceAddressId,
+        warehouseId,
       );
 
       externalReference = `order_${orderId}`;
@@ -368,6 +533,13 @@ export async function submitCheckout(
       externalReference,
     });
 
+    // Fire-and-forget: create portal account for guest checkouts
+    if (!data.existingPartnerId) {
+      createPortalAccountAsync(partnerId, data.email, data.name).catch((err) =>
+        console.error("Portal creation failed (non-fatal):", err),
+      );
+    }
+
     return { redirectUrl: preference.init_point };
   } catch (error) {
     console.error("Checkout error:", error);
@@ -378,6 +550,19 @@ export async function submitCheckout(
       },
     };
   }
+}
+
+async function createPortalAccountAsync(
+  partnerId: number,
+  email: string,
+  name: string,
+): Promise<void> {
+  await setPartnerPassword(partnerId, crypto.randomUUID());
+  await setPortalActive(partnerId, true);
+  const token = await generateSignupToken(partnerId);
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const magicLinkUrl = `${appUrl}/magic-link?token=${token}`;
+  await sendWelcomeEmail(email, name, magicLinkUrl);
 }
 
 async function buildDeliveryNotes(

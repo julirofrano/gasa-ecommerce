@@ -4,7 +4,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth } from "@/auth";
 import { ROUTES } from "@/lib/utils/constants";
-import { getShopProductBySlug } from "@/lib/odoo/product-service";
+import {
+  getShopProductBySlug,
+  getGasFormula,
+} from "@/lib/odoo/product-service";
 import { GasProductActions } from "@/components/products/gas-product-actions";
 import { ProductActions } from "@/components/products/product-actions";
 import type { Product } from "@/types";
@@ -55,15 +58,22 @@ function ProductJsonLd({ product }: { product: Product }) {
     sku: product.sku,
     ...(product.imageUrl && { image: product.imageUrl }),
     brand: { "@type": "Brand", name: "GASA" },
-    offers: {
-      "@type": "Offer",
-      priceCurrency: "ARS",
-      price: Math.round(priceWithTax * 100) / 100,
-      priceValidUntil: new Date(new Date().getFullYear(), 11, 31).toISOString(),
-      availability: product.inStock
-        ? "https://schema.org/InStock"
-        : "https://schema.org/OutOfStock",
-    },
+    // Only include offers with price when price is available
+    ...(netPrice > 0 && {
+      offers: {
+        "@type": "Offer",
+        priceCurrency: "ARS",
+        price: Math.round(priceWithTax * 100) / 100,
+        priceValidUntil: new Date(
+          new Date().getFullYear(),
+          11,
+          31,
+        ).toISOString(),
+        availability: product.inStock
+          ? "https://schema.org/InStock"
+          : "https://schema.org/OutOfStock",
+      },
+    }),
   };
 
   return (
@@ -76,9 +86,11 @@ function ProductJsonLd({ product }: { product: Product }) {
 
 export default async function ProductDetailPage({ params }: Props) {
   const { slug } = await params;
-  const session = await auth();
+  const odooEnabled = process.env.NEXT_PUBLIC_ODOO_ENABLED !== "false";
+  const session = odooEnabled ? await auth() : null;
   const pricelistId = session?.user?.pricelistId ?? undefined;
-  const product = await getShopProductBySlug(slug, pricelistId);
+  const warehouseId = session?.user?.warehouseId ?? undefined;
+  const product = await getShopProductBySlug(slug, pricelistId, warehouseId);
 
   if (!product) notFound();
 
@@ -97,7 +109,7 @@ export default async function ProductDetailPage({ params }: Props) {
         <nav className="mb-6 text-xs font-bold uppercase tracking-widest">
           <Link
             href={ROUTES.PRODUCTS}
-            className="text-muted-foreground transition-colors duration-200 hover:text-[#0094BB]"
+            className="text-muted-foreground transition-colors duration-200 hover:text-accent"
           >
             Productos
           </Link>
@@ -120,8 +132,10 @@ export default async function ProductDetailPage({ params }: Props) {
               />
             ) : (
               <div className="flex h-full items-center justify-center">
-                <span className="text-6xl text-muted-foreground">
-                  {product.type === "gas" ? "\u2689" : "\u2692"}
+                <span className="text-6xl font-black tracking-tighter text-accent md:text-8xl">
+                  {product.type === "gas"
+                    ? getGasFormula(product.id)
+                    : "\u2692"}
                 </span>
               </div>
             )}
@@ -129,7 +143,7 @@ export default async function ProductDetailPage({ params }: Props) {
 
           {/* Product info */}
           <div>
-            <span className="text-xs font-bold uppercase tracking-widest text-[#0094BB]">
+            <span className="text-xs font-bold uppercase tracking-widest text-accent">
               {product.categoryName}
             </span>
             <h1 className="mt-1 text-4xl font-black uppercase tracking-tighter md:text-5xl">
@@ -151,7 +165,10 @@ export default async function ProductDetailPage({ params }: Props) {
 
             <div className="mt-6">
               {product.type === "gas" && product.containerSizes.length > 0 ? (
-                <GasProductActions product={product} />
+                <GasProductActions
+                  product={product}
+                  isLoggedIn={!!session?.user}
+                />
               ) : (
                 <ProductActions
                   productId={product.id}

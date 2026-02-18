@@ -117,14 +117,14 @@ export default function HomeCareServicePage() {
           <nav className="text-xs font-bold uppercase tracking-widest">
             <Link
               href={ROUTES.HOME}
-              className="text-muted-foreground transition-colors duration-200 hover:text-[#0094BB]"
+              className="text-muted-foreground transition-colors duration-200 hover:text-accent"
             >
               Inicio
             </Link>
             <span className="mx-2 text-muted-foreground">/</span>
             <Link
               href={ROUTES.SERVICES}
-              className="text-muted-foreground transition-colors duration-200 hover:text-[#0094BB]"
+              className="text-muted-foreground transition-colors duration-200 hover:text-accent"
             >
               Servicios
             </Link>
@@ -137,13 +137,13 @@ export default function HomeCareServicePage() {
       {/* ── Hero ─────────────────────────────────────────────── */}
       <section className="border-b-4 border-foreground">
         <div className="container mx-auto flex min-h-[55vh] flex-col justify-end px-4 pb-16 pt-24">
-          <p className="mb-6 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+          <p className="mb-6 text-xs font-bold uppercase tracking-[0.3em] text-accent">
             Oxigenoterapia Domiciliaria — Gases Aconcagua S.A.
           </p>
           <h1 className="max-w-5xl text-5xl font-black uppercase leading-[0.88] tracking-tighter sm:text-7xl md:text-8xl lg:text-[8rem]">
             Oxígeno
             <br />
-            en <span className="text-[#0094BB]">casa</span>
+            en <span className="text-accent">casa</span>
           </h1>
           <p className="mt-12 max-w-lg text-base leading-relaxed text-muted-foreground md:text-lg">
             Servicio integral de oxigenoterapia domiciliaria para pacientes que
@@ -162,7 +162,7 @@ export default function HomeCareServicePage() {
                 key={stat.label}
                 className="px-4 py-10 text-center md:px-8 md:py-14"
               >
-                <p className="text-3xl font-black tracking-tighter text-[#0094BB] md:text-5xl lg:text-6xl">
+                <p className="text-3xl font-black tracking-tighter text-accent md:text-5xl lg:text-6xl">
                   {stat.value}
                 </p>
                 <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.2em] text-background/50 md:mt-3 md:text-xs">
@@ -178,7 +178,7 @@ export default function HomeCareServicePage() {
       <section className="border-b-4 border-foreground py-20">
         <div className="container mx-auto px-4">
           <div className="mb-14">
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent">
               01 — Equipamiento
             </p>
             <h2 className="text-4xl font-black uppercase tracking-tighter md:text-5xl">
@@ -228,7 +228,7 @@ export default function HomeCareServicePage() {
       <section className="border-b-4 border-foreground bg-muted py-20 pattern-dots">
         <div className="container mx-auto px-4">
           <div className="mb-14">
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent">
               02 — Beneficios
             </p>
             <h2 className="text-4xl font-black uppercase tracking-tighter md:text-5xl">
@@ -264,7 +264,7 @@ export default function HomeCareServicePage() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col gap-12 md:flex-row md:gap-16">
             <div className="shrink-0 md:w-80 lg:w-96">
-              <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+              <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent">
                 03 — Proceso
               </p>
               <h2 className="text-4xl font-black uppercase tracking-tighter md:text-5xl">
@@ -298,7 +298,7 @@ export default function HomeCareServicePage() {
       </section>
 
       {/* ── CTA ──────────────────────────────────────────────── */}
-      <section className="bg-[#0094BB] py-20 text-background">
+      <section className="bg-accent py-20 text-background">
         <div className="container mx-auto px-4">
           <div className="flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
             <div>
@@ -321,13 +321,13 @@ export default function HomeCareServicePage() {
                 href="https://wa.me/5492613691623"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center border-2 border-background bg-background px-10 py-4 text-sm font-bold uppercase tracking-wide text-[#0094BB] transition-colors duration-200 hover:bg-foreground hover:text-background"
+                className="inline-flex items-center justify-center border-2 border-background bg-background px-10 py-4 text-sm font-bold uppercase tracking-wide text-accent transition-colors duration-200 hover:bg-foreground hover:text-background"
               >
                 WhatsApp
               </a>
               <Link
                 href={ROUTES.CONTACT}
-                className="inline-flex items-center justify-center border-2 border-background px-10 py-4 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:bg-background hover:text-[#0094BB]"
+                className="inline-flex items-center justify-center border-2 border-background px-10 py-4 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:bg-background hover:text-accent"
               >
                 Contactar
               </Link>

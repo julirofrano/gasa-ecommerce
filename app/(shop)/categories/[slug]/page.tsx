@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { auth } from "@/auth";
 import { ROUTES } from "@/lib/utils/constants";
 import {
   getShopCategories,
@@ -66,10 +67,15 @@ export default async function CategoryPage({ params, searchParams }: Props) {
   const totalPages = Math.max(1, Math.ceil(totalProducts / PRODUCTS_PER_PAGE));
   const safePage = Math.min(currentPage, totalPages);
 
+  const odooEnabled = process.env.NEXT_PUBLIC_ODOO_ENABLED !== "false";
+  const session = odooEnabled ? await auth() : null;
+  const warehouseId = session?.user?.warehouseId ?? undefined;
+
   const products = await getShopProducts({
     limit: PRODUCTS_PER_PAGE,
     offset: (safePage - 1) * PRODUCTS_PER_PAGE,
     categoryId: category.id,
+    warehouseId,
   });
 
   return (
@@ -87,14 +93,14 @@ export default async function CategoryPage({ params, searchParams }: Props) {
           <nav className="text-xs font-bold uppercase tracking-widest">
             <Link
               href={ROUTES.HOME}
-              className="text-muted-foreground transition-colors duration-200 hover:text-[#0094BB]"
+              className="text-muted-foreground transition-colors duration-200 hover:text-accent"
             >
               Inicio
             </Link>
             <span className="mx-2 text-muted-foreground">/</span>
             <Link
               href={ROUTES.PRODUCTS}
-              className="text-muted-foreground transition-colors duration-200 hover:text-[#0094BB]"
+              className="text-muted-foreground transition-colors duration-200 hover:text-accent"
             >
               Productos
             </Link>
@@ -131,7 +137,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
                       href={`${ROUTES.CATEGORIES}/${cat.slug}`}
                       className={`block border-b border-foreground/20 py-2.5 text-xs font-bold uppercase tracking-widest transition-colors duration-200 ${
                         cat.slug === slug
-                          ? "text-[#0094BB]"
+                          ? "text-accent"
                           : "text-muted-foreground hover:text-foreground"
                       }`}
                     >
@@ -144,7 +150,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
 
             <Link
               href={ROUTES.PRODUCTS}
-              className="mt-6 hidden text-xs font-bold uppercase tracking-widest text-[#0094BB] transition-colors duration-200 hover:text-foreground md:inline-block"
+              className="mt-6 hidden text-xs font-bold uppercase tracking-widest text-accent transition-colors duration-200 hover:text-foreground md:inline-block"
             >
               ← Ver Todos los Productos
             </Link>
@@ -159,7 +165,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
                   href={`${ROUTES.CATEGORIES}/${cat.slug}`}
                   className={`shrink-0 border-r border-foreground/20 px-4 py-3 text-[10px] font-bold uppercase tracking-widest transition-colors duration-200 last:border-r-0 ${
                     cat.slug === slug
-                      ? "bg-[#0094BB] text-background"
+                      ? "bg-accent text-background"
                       : "text-muted-foreground"
                   }`}
                 >
@@ -181,7 +187,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
                 </p>
                 <Link
                   href={ROUTES.PRODUCTS}
-                  className="mt-6 inline-flex items-center justify-center border-2 border-foreground bg-foreground px-8 py-3 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-[#0094BB] hover:bg-[#0094BB]"
+                  className="mt-6 inline-flex items-center justify-center border-2 border-foreground bg-foreground px-8 py-3 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-accent hover:bg-accent"
                 >
                   Ver Todos los Productos
                 </Link>
@@ -193,12 +199,12 @@ export default async function CategoryPage({ params, searchParams }: Props) {
                     <Link
                       key={product.id}
                       href={`${ROUTES.PRODUCTS}/${product.slug}`}
-                      className="group overflow-hidden border-2 border-foreground bg-background transition-colors duration-300 hover:bg-[#0094BB] hover:text-background md:border-4"
+                      className="group overflow-hidden border-2 border-foreground bg-background transition-colors duration-300 hover:bg-accent hover:text-background md:border-4"
                     >
                       {product.type === "gas" ? (
                         <>
                           <div className="flex aspect-[2/1] items-center justify-center bg-muted transition-colors duration-300 group-hover:bg-transparent">
-                            <span className="text-4xl font-black tracking-tighter text-[#0094BB] transition-colors duration-300 group-hover:text-background/30 md:text-5xl">
+                            <span className="text-4xl font-black tracking-tighter text-accent transition-colors duration-300 group-hover:text-background/30 md:text-5xl">
                               {getGasFormula(product.id)}
                             </span>
                           </div>
@@ -211,7 +217,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
                                 Pureza {product.purity}
                               </p>
                             )}
-                            <span className="mt-3 inline-block text-[10px] font-bold uppercase tracking-widest text-[#0094BB] transition-colors duration-300 group-hover:text-background md:text-xs">
+                            <span className="mt-3 inline-block text-[10px] font-bold uppercase tracking-widest text-accent transition-colors duration-300 group-hover:text-background md:text-xs">
                               Ver Producto →
                             </span>
                           </div>
@@ -248,7 +254,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
                             <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-muted-foreground transition-colors duration-300 group-hover:text-background/60">
                               {product.description}
                             </p>
-                            <span className="mt-3 inline-block text-[10px] font-bold uppercase tracking-widest text-[#0094BB] transition-colors duration-300 group-hover:text-background md:text-xs">
+                            <span className="mt-3 inline-block text-[10px] font-bold uppercase tracking-widest text-accent transition-colors duration-300 group-hover:text-background md:text-xs">
                               Ver Producto →
                             </span>
                           </div>
@@ -301,7 +307,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
       {/* ── Other Categories ────────────────────────────────── */}
       <div className="border-t-4 border-foreground bg-muted py-12 pattern-dots md:py-16">
         <div className="container mx-auto px-4">
-          <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+          <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent">
             Más Categorías
           </p>
           <h2 className="mb-8 text-3xl font-black uppercase tracking-tighter md:text-4xl">
@@ -314,7 +320,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
                 <Link
                   key={cat.slug}
                   href={`${ROUTES.CATEGORIES}/${cat.slug}`}
-                  className="group flex items-start gap-5 border-2 border-foreground bg-background p-6 transition-colors duration-300 hover:bg-[#0094BB] hover:text-background md:border-4 md:p-8"
+                  className="group flex items-start gap-5 border-2 border-foreground bg-background p-6 transition-colors duration-300 hover:bg-accent hover:text-background md:border-4 md:p-8"
                 >
                   <span className="text-2xl font-black tracking-tighter text-foreground/15 transition-colors duration-300 group-hover:text-background/20 md:text-3xl">
                     {String(i + 1).padStart(2, "0")}
@@ -323,7 +329,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
                     <h3 className="text-xs font-bold uppercase tracking-wide md:text-sm">
                       {cat.name}
                     </h3>
-                    <span className="mt-2 inline-block text-[10px] font-bold uppercase tracking-widest text-[#0094BB] transition-colors duration-300 group-hover:text-background md:text-xs">
+                    <span className="mt-2 inline-block text-[10px] font-bold uppercase tracking-widest text-accent transition-colors duration-300 group-hover:text-background md:text-xs">
                       Explorar →
                     </span>
                   </div>

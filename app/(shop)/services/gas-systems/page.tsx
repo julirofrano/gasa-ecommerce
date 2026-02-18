@@ -98,14 +98,14 @@ export default function GasSystemsPage() {
           <nav className="text-xs font-bold uppercase tracking-widest">
             <Link
               href={ROUTES.HOME}
-              className="text-muted-foreground transition-colors duration-200 hover:text-[#0094BB]"
+              className="text-muted-foreground transition-colors duration-200 hover:text-accent"
             >
               Inicio
             </Link>
             <span className="mx-2 text-muted-foreground">/</span>
             <Link
               href={ROUTES.SERVICES}
-              className="text-muted-foreground transition-colors duration-200 hover:text-[#0094BB]"
+              className="text-muted-foreground transition-colors duration-200 hover:text-accent"
             >
               Servicios
             </Link>
@@ -118,13 +118,13 @@ export default function GasSystemsPage() {
       {/* ── Hero ─────────────────────────────────────────────── */}
       <section className="border-b-4 border-foreground">
         <div className="container mx-auto flex min-h-[55vh] flex-col justify-end px-4 pb-16 pt-24">
-          <p className="mb-6 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+          <p className="mb-6 text-xs font-bold uppercase tracking-[0.3em] text-accent">
             Ingeniería & Instalación — Gases Aconcagua S.A.
           </p>
           <h1 className="max-w-5xl text-5xl font-black uppercase leading-[0.88] tracking-tighter sm:text-7xl md:text-8xl lg:text-[8rem]">
             Instalaciones
             <br />
-            de <span className="text-[#0094BB]">gases</span>
+            de <span className="text-accent">gases</span>
           </h1>
           <p className="mt-12 max-w-lg text-base leading-relaxed text-muted-foreground md:text-lg">
             Diseñamos e instalamos sistemas completos de distribución de gases
@@ -139,11 +139,11 @@ export default function GasSystemsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2">
           <Link
             href={ROUTES.SERVICES_GAS_SYSTEMS_INDUSTRIAL}
-            className="group border-b-4 border-foreground transition-colors duration-300 hover:bg-[#0094BB] hover:text-background md:border-b-0 md:border-r-4"
+            className="group border-b-4 border-foreground transition-colors duration-300 hover:bg-accent hover:text-background md:border-b-0 md:border-r-4"
           >
             <div className="container mx-auto px-4 py-14 md:py-20">
               <div className="mx-auto max-w-lg">
-                <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB] transition-colors duration-300 group-hover:text-background">
+                <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent transition-colors duration-300 group-hover:text-background">
                   01 — Industrial
                 </p>
                 <h2 className="text-3xl font-black uppercase tracking-tighter md:text-4xl">
@@ -164,7 +164,7 @@ export default function GasSystemsPage() {
                     </li>
                   ))}
                 </ul>
-                <span className="mt-6 inline-block text-[10px] font-bold uppercase tracking-widest text-[#0094BB] transition-colors duration-300 group-hover:text-background md:text-xs">
+                <span className="mt-6 inline-block text-[10px] font-bold uppercase tracking-widest text-accent transition-colors duration-300 group-hover:text-background md:text-xs">
                   Ver Soluciones Industriales →
                 </span>
               </div>
@@ -173,11 +173,11 @@ export default function GasSystemsPage() {
 
           <Link
             href={ROUTES.SERVICES_GAS_SYSTEMS_MEDICAL}
-            className="group transition-colors duration-300 hover:bg-[#0094BB] hover:text-background"
+            className="group transition-colors duration-300 hover:bg-accent hover:text-background"
           >
             <div className="container mx-auto px-4 py-14 md:py-20">
               <div className="mx-auto max-w-lg">
-                <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB] transition-colors duration-300 group-hover:text-background">
+                <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent transition-colors duration-300 group-hover:text-background">
                   02 — Medicinal
                 </p>
                 <h2 className="text-3xl font-black uppercase tracking-tighter md:text-4xl">
@@ -198,7 +198,7 @@ export default function GasSystemsPage() {
                     </li>
                   ))}
                 </ul>
-                <span className="mt-6 inline-block text-[10px] font-bold uppercase tracking-widest text-[#0094BB] transition-colors duration-300 group-hover:text-background md:text-xs">
+                <span className="mt-6 inline-block text-[10px] font-bold uppercase tracking-widest text-accent transition-colors duration-300 group-hover:text-background md:text-xs">
                   Ver Soluciones Medicinales →
                 </span>
               </div>
@@ -211,7 +211,7 @@ export default function GasSystemsPage() {
       <section className="border-b-4 border-foreground bg-muted py-20 pattern-dots">
         <div className="container mx-auto px-4">
           <div className="mb-14">
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent">
               03 — Capacidades
             </p>
             <h2 className="text-4xl font-black uppercase tracking-tighter md:text-5xl">
@@ -247,7 +247,7 @@ export default function GasSystemsPage() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col gap-12 md:flex-row md:gap-16">
             <div className="shrink-0 md:w-80 lg:w-96">
-              <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+              <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent">
                 04 — Proceso
               </p>
               <h2 className="text-4xl font-black uppercase tracking-tighter md:text-5xl">
@@ -281,7 +281,7 @@ export default function GasSystemsPage() {
       </section>
 
       {/* ── CTA ──────────────────────────────────────────────── */}
-      <section className="bg-[#0094BB] py-20 text-background">
+      <section className="bg-accent py-20 text-background">
         <div className="container mx-auto px-4">
           <div className="flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
             <div>
@@ -302,13 +302,13 @@ export default function GasSystemsPage() {
             <div className="flex shrink-0 flex-col gap-4 sm:flex-row">
               <Link
                 href={ROUTES.CONTACT}
-                className="inline-flex items-center justify-center border-2 border-background bg-background px-10 py-4 text-sm font-bold uppercase tracking-wide text-[#0094BB] transition-colors duration-200 hover:bg-foreground hover:text-background"
+                className="inline-flex items-center justify-center border-2 border-background bg-background px-10 py-4 text-sm font-bold uppercase tracking-wide text-accent transition-colors duration-200 hover:bg-foreground hover:text-background"
               >
                 Solicitar Cotización
               </Link>
               <a
                 href="mailto:ingenieria@gasesaconcagua.com.ar"
-                className="inline-flex items-center justify-center border-2 border-background px-10 py-4 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:bg-background hover:text-[#0094BB]"
+                className="inline-flex items-center justify-center border-2 border-background px-10 py-4 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:bg-background hover:text-accent"
               >
                 Email Ingeniería
               </a>

@@ -2,32 +2,26 @@
 
 import { auth } from "@/auth";
 import { odooClient } from "@/lib/odoo/client";
+import { getCommercialPartnerId } from "@/lib/auth/session";
 
 /**
- * Resolve the set of partner IDs that belong to the current user's company.
- * Returns the parent company ID + all child contact IDs.
- * Used for ownership verification in document downloads and detail pages.
+ * Get the set of partner IDs that belong to a commercial partner.
+ * Returns the commercial partner ID + all descendant contact IDs.
  */
-async function resolveCompanyPartnerIds(
-  partnerId: number,
-): Promise<{ parentId: number; allIds: Set<number> }> {
-  const partners = await odooClient.read<{
-    parent_id: [number, string] | false;
-  }>("res.partner", [partnerId], ["parent_id"]);
-  const partner = partners[0];
-  const parentId = partner?.parent_id ? partner.parent_id[0] : partnerId;
-
+async function getCompanyPartnerIds(
+  commercialPartnerId: number,
+): Promise<Set<number>> {
   const childIds = await odooClient.search("res.partner", [
-    ["parent_id", "=", parentId],
+    ["commercial_partner_id", "=", commercialPartnerId],
+    ["id", "!=", commercialPartnerId],
   ]);
 
-  const allIds = new Set([parentId, ...childIds]);
-  return { parentId, allIds };
+  return new Set([commercialPartnerId, ...childIds]);
 }
 
 /**
  * Verify that a partner_id (from an order, invoice, etc.) belongs to the
- * authenticated user's company. Returns the session if authorized, or null.
+ * authenticated user's company. Returns true if authorized.
  */
 export async function verifyResourceOwnership(
   resourcePartnerId: number,
@@ -35,7 +29,8 @@ export async function verifyResourceOwnership(
   const session = await auth();
   if (!session?.user?.partnerId) return false;
 
-  const { allIds } = await resolveCompanyPartnerIds(session.user.partnerId);
+  const commercialPartnerId = await getCommercialPartnerId(session);
+  const allIds = await getCompanyPartnerIds(commercialPartnerId);
   return allIds.has(resourcePartnerId);
 }
 
@@ -47,6 +42,6 @@ export async function getSessionCompanyIds(): Promise<Set<number> | null> {
   const session = await auth();
   if (!session?.user?.partnerId) return null;
 
-  const { allIds } = await resolveCompanyPartnerIds(session.user.partnerId);
-  return allIds;
+  const commercialPartnerId = await getCommercialPartnerId(session);
+  return getCompanyPartnerIds(commercialPartnerId);
 }

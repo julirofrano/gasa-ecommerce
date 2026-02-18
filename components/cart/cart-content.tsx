@@ -33,7 +33,7 @@ export function CartContent() {
         </p>
         <Link
           href={ROUTES.PRODUCTS}
-          className="mt-8 inline-flex items-center justify-center border-2 border-foreground bg-foreground px-8 py-3 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-[#0094BB] hover:bg-[#0094BB]"
+          className="mt-8 inline-flex items-center justify-center border-2 border-foreground bg-foreground px-8 py-3 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-accent hover:bg-accent"
         >
           Ver Productos
         </Link>
@@ -72,7 +72,7 @@ export function CartContent() {
           </button>
           <Link
             href={ROUTES.PRODUCTS}
-            className="text-xs font-bold uppercase tracking-wide text-[#0094BB] transition-colors duration-200 hover:text-foreground"
+            className="text-xs font-bold uppercase tracking-wide text-accent transition-colors duration-200 hover:text-foreground"
           >
             Seguir Comprando
           </Link>
@@ -120,7 +120,7 @@ export function CartContent() {
 
           <Link
             href={ROUTES.CHECKOUT}
-            className="mt-6 flex w-full items-center justify-center border-2 border-foreground bg-foreground px-6 py-4 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-[#0094BB] hover:bg-[#0094BB]"
+            className="mt-6 flex w-full items-center justify-center border-2 border-foreground bg-foreground px-6 py-4 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-accent hover:bg-accent"
           >
             Proceder al Pago
           </Link>

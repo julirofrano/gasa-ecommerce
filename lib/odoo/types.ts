@@ -65,6 +65,7 @@ export interface OdooCategory {
 export interface OdooPartner {
   id: number;
   name: string;
+  function?: string;
   email?: string;
   phone?: string;
   vat?: string;
@@ -77,12 +78,22 @@ export interface OdooPartner {
   is_company: boolean;
   type?: "contact" | "invoice" | "delivery" | "private" | "other";
   parent_id?: [number, string];
+  commercial_partner_id: [number, string];
   child_ids: number[];
   property_product_pricelist?: [number, string];
   user_ids: number[];
   l10n_ar_afip_responsibility_type_id?: [number, string] | false;
+  default_warehouse_id?: [number, string] | false;
   partner_latitude?: number;
   partner_longitude?: number;
+}
+
+export interface OdooUser {
+  id: number;
+  login: string;
+  partner_id: [number, string];
+  groups_id: number[];
+  active: boolean;
 }
 
 export interface OdooSaleOrder {
@@ -102,6 +113,7 @@ export interface OdooSaleOrder {
   note?: string;
   client_order_ref?: string;
   payment_term_id?: [number, string];
+  delivery_status?: "no" | "partial" | "full";
   invoice_status: "no" | "to invoice" | "invoiced";
   invoice_ids: number[];
 }
@@ -211,6 +223,10 @@ export interface OdooContainerTransfer {
   effective_date: string | false;
   source_effective: string;
   destination_effective: string;
+  partner_id?: [number, string];
+  customer_id?: [number, string];
+  notes?: string | false;
+  create_date?: string;
 }
 
 export interface OdooContainerTransferLine {
@@ -240,6 +256,13 @@ export interface OdooCompany {
   state_id?: [number, string];
   zip?: string;
   phone?: string;
+}
+
+export interface OdooWarehouse {
+  id: number;
+  name: string;
+  company_id: [number, string];
+  partner_id: [number, string];
 }
 
 export interface OdooRPCRequest {

@@ -181,12 +181,14 @@ export class OdooClient {
     limit?: number,
     offset?: number,
     order?: string,
+    context?: Record<string, unknown>,
   ): Promise<T[]> {
     return this.call<T[]>(model, "search_read", [domain], {
       fields,
       limit,
       offset,
       order,
+      ...(context && { context }),
     });
   }
 

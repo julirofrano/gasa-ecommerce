@@ -36,7 +36,7 @@ export function CartDrawer() {
         {/* ── Header ─────────────────────────────────── */}
         <div className="flex items-center justify-between border-b-2 border-foreground px-6 py-4">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[#0094BB]">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-accent">
               Su Carrito
             </p>
             <p className="mt-0.5 text-sm font-black uppercase tracking-tight">
@@ -45,7 +45,7 @@ export function CartDrawer() {
           </div>
           <button
             onClick={closeCart}
-            className="p-2 transition-colors duration-200 hover:text-[#0094BB]"
+            className="p-2 transition-colors duration-200 hover:text-accent"
             aria-label="Cerrar carrito"
           >
             <X className="h-5 w-5" />
@@ -62,7 +62,7 @@ export function CartDrawer() {
             <Link
               href={ROUTES.PRODUCTS}
               onClick={closeCart}
-              className="border-2 border-foreground bg-foreground px-8 py-3 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-[#0094BB] hover:bg-[#0094BB]"
+              className="border-2 border-foreground bg-foreground px-8 py-3 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-accent hover:bg-accent"
             >
               Ver Productos
             </Link>
@@ -92,7 +92,7 @@ export function CartDrawer() {
                 <Link
                   href={ROUTES.CHECKOUT}
                   onClick={closeCart}
-                  className="flex w-full items-center justify-center border-2 border-foreground bg-foreground px-6 py-3 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-[#0094BB] hover:bg-[#0094BB]"
+                  className="flex w-full items-center justify-center border-2 border-foreground bg-foreground px-6 py-3 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-accent hover:bg-accent"
                 >
                   Proceder al Pago
                 </Link>

@@ -23,6 +23,8 @@ export default function GlobalError({
             __html: `
               @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
 
+              :root { --accent: var(--accent); }
+
               *, *::before, *::after {
                 margin: 0;
                 padding: 0;
@@ -74,7 +76,7 @@ export default function GlobalError({
                 font-weight: 700;
                 text-transform: uppercase;
                 letter-spacing: 0.1em;
-                color: #0094BB;
+                color: var(--accent);
               }
 
               .ge-title {
@@ -93,7 +95,7 @@ export default function GlobalError({
                 right: 0;
                 bottom: 38%;
                 height: 8px;
-                background: #0094BB;
+                background: var(--accent);
               }
 
               @media (min-width: 768px) {
@@ -145,7 +147,7 @@ export default function GlobalError({
               .ge-ref {
                 margin-top: 1rem;
                 padding-left: 0.75rem;
-                border-left: 2px solid #0094BB;
+                border-left: 2px solid var(--accent);
                 font-family: monospace;
                 font-size: 12px;
                 color: #666666;
@@ -182,8 +184,8 @@ export default function GlobalError({
               }
 
               .ge-btn-primary:hover {
-                background: #0094BB;
-                border-color: #0094BB;
+                background: var(--accent);
+                border-color: var(--accent);
               }
 
               .ge-btn-secondary {
@@ -220,7 +222,7 @@ export default function GlobalError({
                 font-weight: 700;
                 text-transform: uppercase;
                 letter-spacing: 0.15em;
-                color: #0094BB;
+                color: var(--accent);
                 text-decoration: none;
                 transition: color 0.2s;
               }

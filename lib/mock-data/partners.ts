@@ -20,9 +20,11 @@ const MOCK_PARTNERS: Record<number, MockPartnerData> = {
       zip: "5507",
       country_id: [10, "Argentina"],
       is_company: true,
+      commercial_partner_id: [42, "Metalúrgica Cuyo S.R.L."],
       child_ids: [101, 102],
       user_ids: [1],
       property_product_pricelist: [1, "Lista Industrial B2B"],
+      default_warehouse_id: [1, "WH Mendoza"],
     },
     shippingAddresses: [
       {
@@ -35,6 +37,7 @@ const MOCK_PARTNERS: Record<number, MockPartnerData> = {
         zip: "5507",
         country_id: [10, "Argentina"],
         is_company: false,
+        commercial_partner_id: [42, "Metalúrgica Cuyo S.R.L."],
         parent_id: [42, "Metalúrgica Cuyo S.R.L."],
         child_ids: [],
         user_ids: [],
@@ -48,6 +51,7 @@ const MOCK_PARTNERS: Record<number, MockPartnerData> = {
         zip: "5501",
         country_id: [10, "Argentina"],
         is_company: false,
+        commercial_partner_id: [42, "Metalúrgica Cuyo S.R.L."],
         parent_id: [42, "Metalúrgica Cuyo S.R.L."],
         child_ids: [],
         user_ids: [],

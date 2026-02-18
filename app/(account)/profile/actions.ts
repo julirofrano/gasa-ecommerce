@@ -1,14 +1,16 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getRequiredSession } from "@/lib/auth/session";
-import { getPartner } from "@/lib/odoo/partners";
+import { getRequiredSession, getCommercialPartnerId } from "@/lib/auth/session";
 import {
+  getPartner,
   createPartnerAddress,
+  createCompanyContact,
   updatePartner,
   deletePartnerAddress,
 } from "@/lib/odoo/partners";
 import type { OdooPartner } from "@/lib/odoo/types";
+import { verifyPartnerPassword, setPartnerPassword } from "@/lib/odoo/portal";
 
 interface AddressData {
   name: string;
@@ -23,12 +25,7 @@ interface AddressData {
 /** Resolve the company ID for the current user */
 async function getCompanyId(): Promise<number> {
   const session = await getRequiredSession();
-  const partner = await getPartner(session.user.partnerId);
-  if (!partner) throw new Error("No se encontró el perfil del usuario.");
-
-  return partner.is_company || !partner.parent_id
-    ? partner.id
-    : partner.parent_id[0];
+  return getCommercialPartnerId(session);
 }
 
 /** Verify an address belongs to the user's company */
@@ -41,6 +38,57 @@ async function verifyOwnership(
     throw new Error("Dirección no encontrada o no autorizada.");
   }
   return address;
+}
+
+export async function createContact(data: {
+  name: string;
+  function?: string;
+  email?: string;
+  phone?: string;
+}): Promise<{ success: boolean; error?: string }> {
+  try {
+    const companyId = await getCompanyId();
+    await createCompanyContact(companyId, data);
+    revalidatePath("/profile");
+    return { success: true };
+  } catch (error) {
+    return {
+      success: false,
+      error:
+        error instanceof Error ? error.message : "Error al crear el contacto.",
+    };
+  }
+}
+
+export async function updateContact(
+  contactId: number,
+  data: {
+    name: string;
+    function?: string;
+    email?: string;
+    phone?: string;
+  },
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const companyId = await getCompanyId();
+    await verifyOwnership(contactId, companyId);
+    await updatePartner(contactId, {
+      name: data.name,
+      function: data.function || "",
+      email: data.email || "",
+      phone: data.phone || "",
+    });
+    revalidatePath("/profile");
+    return { success: true };
+  } catch (error) {
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Error al actualizar el contacto.",
+    };
+  }
 }
 
 export async function createAddress(
@@ -172,6 +220,47 @@ export async function deleteAddress(
         error instanceof Error
           ? error.message
           : "Error al eliminar la dirección.",
+    };
+  }
+}
+
+export async function updatePassword(
+  currentPassword: string | null,
+  newPassword: string,
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    if (newPassword.length < 8) {
+      return {
+        success: false,
+        error: "La contraseña debe tener al menos 8 caracteres.",
+      };
+    }
+
+    const session = await getRequiredSession();
+
+    // Verify current password if provided
+    if (currentPassword) {
+      const verified = await verifyPartnerPassword(
+        session.user.partnerId,
+        currentPassword,
+      );
+      if (!verified) {
+        return {
+          success: false,
+          error: "La contraseña actual es incorrecta.",
+        };
+      }
+    }
+
+    await setPartnerPassword(session.user.partnerId, newPassword);
+    return { success: true };
+  } catch (error) {
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Error al actualizar la contraseña.",
     };
   }
 }

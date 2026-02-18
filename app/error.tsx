@@ -32,7 +32,7 @@ export default function Error({
             <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
               Error del Sistema
             </p>
-            <p className="mt-1 text-xs font-bold uppercase tracking-widest text-[#0094BB]">
+            <p className="mt-1 text-xs font-bold uppercase tracking-widest text-accent">
               Algo Salió Mal
             </p>
 
@@ -43,7 +43,7 @@ export default function Error({
               </h1>
 
               {/* Accent stripe */}
-              <div className="absolute bottom-[38%] left-0 h-2 w-full bg-[#0094BB] md:h-3" />
+              <div className="absolute bottom-[38%] left-0 h-2 w-full bg-accent md:h-3" />
             </div>
 
             {/* ── Divider ────────────────────────────────── */}
@@ -66,7 +66,7 @@ export default function Error({
 
                 {/* Error digest for support */}
                 {error.digest && (
-                  <p className="mt-4 border-l-2 border-[#0094BB] pl-3 font-mono text-xs text-muted-foreground">
+                  <p className="mt-4 border-l-2 border-accent pl-3 font-mono text-xs text-muted-foreground">
                     Ref: {error.digest}
                   </p>
                 )}
@@ -76,7 +76,7 @@ export default function Error({
               <div className="flex flex-col gap-3 sm:flex-row">
                 <button
                   onClick={reset}
-                  className="border-2 border-foreground bg-foreground px-8 py-4 text-center text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-[#0094BB] hover:bg-[#0094BB]"
+                  className="border-2 border-foreground bg-foreground px-8 py-4 text-center text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-accent hover:bg-accent"
                 >
                   Reintentar
                 </button>
@@ -126,7 +126,7 @@ export default function Error({
                   Contactanos a{" "}
                   <a
                     href="mailto:consultas@gasesaconcagua.com.ar"
-                    className="font-bold text-[#0094BB] transition-colors duration-200 hover:text-foreground"
+                    className="font-bold text-accent transition-colors duration-200 hover:text-foreground"
                   >
                     consultas@gasesaconcagua.com.ar
                   </a>

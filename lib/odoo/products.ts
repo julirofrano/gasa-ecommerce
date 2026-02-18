@@ -28,12 +28,15 @@ export async function getProducts(
   limit = 20,
   offset = 0,
   categoryId?: number,
+  warehouseId?: number,
 ): Promise<OdooProduct[]> {
   const domain: unknown[] = [...PUBLISHED_DOMAIN];
 
   if (categoryId) {
     domain.push(["categ_id", "=", categoryId]);
   }
+
+  const context = warehouseId ? { warehouse: warehouseId } : undefined;
 
   return odooClient.searchRead<OdooProduct>(
     "product.template",
@@ -42,6 +45,7 @@ export async function getProducts(
     limit,
     offset,
     "name ASC",
+    context,
   );
 }
 
@@ -62,7 +66,10 @@ export async function getProductBySlug(
 
 export async function getProductVariants(
   templateId: number,
+  warehouseId?: number,
 ): Promise<OdooProductVariant[]> {
+  const context = warehouseId ? { warehouse: warehouseId } : undefined;
+
   return odooClient.searchRead<OdooProductVariant>(
     "product.product",
     [
@@ -78,6 +85,10 @@ export async function getProductVariants(
       "image_variant_1920",
       "product_template_attribute_value_ids",
     ],
+    undefined,
+    undefined,
+    undefined,
+    context,
   );
 }
 
@@ -113,7 +124,10 @@ export async function getCategoryById(
 export async function searchProducts(
   query: string,
   limit = 20,
+  warehouseId?: number,
 ): Promise<OdooProduct[]> {
+  const context = warehouseId ? { warehouse: warehouseId } : undefined;
+
   return odooClient.searchRead<OdooProduct>(
     "product.template",
     [
@@ -126,6 +140,9 @@ export async function searchProducts(
     ],
     PRODUCT_FIELDS,
     limit,
+    undefined,
+    undefined,
+    context,
   );
 }
 

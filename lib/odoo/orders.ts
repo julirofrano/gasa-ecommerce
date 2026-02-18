@@ -18,6 +18,7 @@ export async function createOrder(
   notes?: string,
   pricelistId?: number,
   invoiceAddressId?: number,
+  warehouseId?: number,
 ): Promise<number> {
   const orderData: Record<string, unknown> = {
     partner_id: partnerId,
@@ -41,6 +42,10 @@ export async function createOrder(
     orderData.pricelist_id = pricelistId;
   }
 
+  if (warehouseId) {
+    orderData.warehouse_id = warehouseId;
+  }
+
   if (notes) {
     orderData.note = notes;
   }
@@ -49,18 +54,13 @@ export async function createOrder(
 }
 
 export async function getOrders(
-  partnerIds: number | number[],
+  commercialPartnerId: number,
   limit = 20,
   offset = 0,
 ): Promise<OdooSaleOrder[]> {
-  const ids = Array.isArray(partnerIds) ? partnerIds : [partnerIds];
-  const domain: unknown[] =
-    ids.length === 1
-      ? [["partner_id", "=", ids[0]]]
-      : [["partner_id", "in", ids]];
   return odooClient.searchRead<OdooSaleOrder>(
     "sale.order",
-    domain,
+    [["partner_id", "child_of", commercialPartnerId]],
     [
       "name",
       "partner_id",
@@ -68,6 +68,7 @@ export async function getOrders(
       "state",
       "amount_total",
       "currency_id",
+      "delivery_status",
       "invoice_status",
       "payment_term_id",
     ],

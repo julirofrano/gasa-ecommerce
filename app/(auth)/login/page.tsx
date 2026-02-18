@@ -13,7 +13,7 @@ export default function LoginPage() {
   return (
     <div>
       {/* ── Header ───────────────────────────────────────── */}
-      <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+      <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent">
         Acceso — Portal de Clientes
       </p>
       <h1 className="text-4xl font-black uppercase tracking-tighter md:text-5xl">

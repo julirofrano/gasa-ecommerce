@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { FileText } from "lucide-react";
-import { getRequiredSession } from "@/lib/auth/session";
+import { getRequiredSession, getCommercialPartnerId } from "@/lib/auth/session";
 import { getInvoices } from "@/lib/odoo/invoices";
 import {
   INVOICE_PAYMENT_STATE_LABELS,
@@ -43,8 +43,8 @@ export default async function InvoicesPage({ searchParams }: Props) {
   const session = await getRequiredSession();
   const { payment_state, q } = await searchParams;
 
-  // getInvoices resolves to parent company internally via child_of
-  const invoices = await getInvoices(session.user.partnerId);
+  const commercialPartnerId = await getCommercialPartnerId(session);
+  const invoices = await getInvoices(commercialPartnerId);
 
   if (invoices.length === 0) {
     return (
@@ -190,7 +190,7 @@ export default async function InvoicesPage({ searchParams }: Props) {
                     <td className="px-4 py-3 text-right">
                       <Link
                         href={`/invoices/${invoice.id}`}
-                        className="text-xs font-bold uppercase tracking-wide text-[#0094BB] transition-colors duration-200 hover:text-foreground"
+                        className="text-xs font-bold uppercase tracking-wide text-accent transition-colors duration-200 hover:text-foreground"
                       >
                         Ver detalle
                       </Link>

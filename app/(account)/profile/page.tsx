@@ -1,9 +1,16 @@
 import type { Metadata } from "next";
 import { getRequiredSession } from "@/lib/auth/session";
-import { getPartner, getPartnerAddresses } from "@/lib/odoo/partners";
+import {
+  getPartner,
+  getPartnerAddresses,
+  getCompanyContacts,
+} from "@/lib/odoo/partners";
+import { getBranchNamesByWarehouseIds } from "@/lib/odoo/warehouses";
 import { ProfileForm } from "@/components/account/profile-form";
+import { ContactsSection } from "@/components/account/contacts-section";
 import { AddressSection } from "@/components/account/address-section";
 import { AddressMapWrapper } from "@/components/account/address-map-wrapper";
+import { PasswordSection } from "@/components/account/password-section";
 
 export const metadata: Metadata = {
   title: "Mi Perfil",
@@ -22,18 +29,41 @@ export default async function ProfilePage() {
     );
   }
 
-  // If partner is a contact under a company, fetch the parent for company info
+  // Fetch the commercial partner (top-level company) for company info
+  const commercialPartnerId =
+    session.user.commercialPartnerId ?? partner.commercial_partner_id[0];
   const company =
-    partner.is_company || !partner.parent_id
+    partner.id === commercialPartnerId
       ? partner
-      : await getPartner(partner.parent_id[0]);
+      : await getPartner(commercialPartnerId);
 
-  // Fetch addresses from the company (or the partner itself)
-  const companyId = company?.id ?? partner.id;
-  const [deliveryAddresses, invoiceAddresses] = await Promise.all([
-    getPartnerAddresses(companyId, "delivery"),
-    getPartnerAddresses(companyId, "invoice"),
-  ]);
+  const companyId = commercialPartnerId;
+  const [deliveryAddresses, invoiceAddresses, companyContacts] =
+    await Promise.all([
+      getPartnerAddresses(companyId, "delivery"),
+      getPartnerAddresses(companyId, "invoice"),
+      getCompanyContacts(companyId),
+    ]);
+
+  // Resolve branch names for delivery addresses that have a default warehouse
+  const warehouseIds = deliveryAddresses
+    .map((a) => (a.default_warehouse_id ? a.default_warehouse_id[0] : null))
+    .filter((id): id is number => id !== null);
+  const uniqueWarehouseIds = [...new Set(warehouseIds)];
+  const branchNamesMap = await getBranchNamesByWarehouseIds(uniqueWarehouseIds);
+  const branchNames: Record<number, string> =
+    Object.fromEntries(branchNamesMap);
+
+  // Detect particular accounts (no parent company)
+  const isParticular =
+    partner.id === commercialPartnerId && !partner.is_company;
+
+  // Separate the logged-in user from other contacts
+  const otherContacts = companyContacts.filter((c) => c.id !== partner.id);
+
+  // Section counter — adjusts when "Contactos de la Empresa" is hidden
+  let sectionNum = 0;
+  const nextSection = () => String(++sectionNum).padStart(2, "0");
 
   return (
     <div className="space-y-8">
@@ -41,20 +71,20 @@ export default async function ProfilePage() {
         Mi Perfil
       </h1>
 
-      {/* ── 01 Datos de la Empresa ────────────────────── */}
+      {/* ── Datos de la Empresa / Mis Datos ────────────── */}
       <section className="border-2 border-foreground p-6 md:border-4 md:p-8">
         <div className="mb-6 flex items-baseline gap-3">
           <span className="font-mono text-sm font-bold text-muted-foreground">
-            01
+            {nextSection()}
           </span>
-          <h2 className="text-xs font-bold uppercase tracking-widest text-[#0094BB]">
-            Datos de la Empresa
+          <h2 className="text-xs font-bold uppercase tracking-widest text-accent">
+            {isParticular ? "Mis Datos" : "Datos de la Empresa"}
           </h2>
         </div>
         <dl className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <div>
             <dt className="mb-1 text-xs font-bold uppercase tracking-widest text-muted-foreground">
-              Razón Social
+              {isParticular ? "Nombre" : "Razón Social"}
             </dt>
             <dd className="text-sm font-bold">
               {company?.name ?? partner.name}
@@ -62,7 +92,7 @@ export default async function ProfilePage() {
           </div>
           <div>
             <dt className="mb-1 text-xs font-bold uppercase tracking-widest text-muted-foreground">
-              CUIT
+              {isParticular ? "CUIT / CUIL" : "CUIT"}
             </dt>
             <dd className="font-mono text-sm font-bold">
               {company?.vat || partner.vat || "—"}
@@ -70,37 +100,44 @@ export default async function ProfilePage() {
           </div>
           <div>
             <dt className="mb-1 text-xs font-bold uppercase tracking-widest text-muted-foreground">
-              Lista de Precios
+              Condición ante ARCA
             </dt>
             <dd className="text-sm font-bold">
-              {company?.property_product_pricelist?.[1] ||
-                partner.property_product_pricelist?.[1] ||
+              {(company?.l10n_ar_afip_responsibility_type_id &&
+                company.l10n_ar_afip_responsibility_type_id[1]) ||
+                (partner.l10n_ar_afip_responsibility_type_id &&
+                  partner.l10n_ar_afip_responsibility_type_id[1]) ||
                 "—"}
             </dd>
           </div>
         </dl>
       </section>
 
-      {/* ── 02 Datos de Contacto ──────────────────────── */}
+      {/* ── Mi Contacto ──────────────────────────── */}
       <section className="border-2 border-foreground p-6 md:border-4 md:p-8">
         <div className="mb-6 flex items-baseline gap-3">
           <span className="font-mono text-sm font-bold text-muted-foreground">
-            02
+            {nextSection()}
           </span>
-          <h2 className="text-xs font-bold uppercase tracking-widest text-[#0094BB]">
-            Datos de Contacto
+          <h2 className="text-xs font-bold uppercase tracking-widest text-accent">
+            Mi Contacto
           </h2>
         </div>
-        <ProfileForm partner={partner} />
+        <ProfileForm partner={partner} isParticular={isParticular} />
       </section>
 
-      {/* ── 03 Dirección Principal ────────────────────── */}
+      {/* ── Contactos de la Empresa (hidden for particular) ── */}
+      {!isParticular && (
+        <ContactsSection number={nextSection()} contacts={otherContacts} />
+      )}
+
+      {/* ── Dirección Principal ────────────────────── */}
       <section className="border-2 border-foreground p-6 md:border-4 md:p-8">
         <div className="mb-6 flex items-baseline gap-3">
           <span className="font-mono text-sm font-bold text-muted-foreground">
-            03
+            {nextSection()}
           </span>
-          <h2 className="text-xs font-bold uppercase tracking-widest text-[#0094BB]">
+          <h2 className="text-xs font-bold uppercase tracking-widest text-accent">
             Dirección Principal
           </h2>
         </div>
@@ -130,9 +167,9 @@ export default async function ProfilePage() {
         </div>
       </section>
 
-      {/* ── 04 Direcciones de Envío ───────────────────── */}
+      {/* ── Direcciones de Envío ───────────────────── */}
       <AddressSection
-        number="04"
+        number={nextSection()}
         title="Direcciones de Envio"
         type="delivery"
         addresses={deliveryAddresses}
@@ -142,11 +179,12 @@ export default async function ProfilePage() {
           city: company?.city,
           zip: company?.zip,
         }}
+        branchNames={branchNames}
       />
 
-      {/* ── 05 Direcciones de Facturación ──────────────── */}
+      {/* ── Direcciones de Facturación ──────────────── */}
       <AddressSection
-        number="05"
+        number={nextSection()}
         title="Direcciones de Facturacion"
         type="invoice"
         addresses={invoiceAddresses}
@@ -157,6 +195,19 @@ export default async function ProfilePage() {
           zip: company?.zip,
         }}
       />
+
+      {/* ── Contraseña ──────────────────────────────── */}
+      <section className="border-2 border-foreground p-6 md:border-4 md:p-8">
+        <div className="mb-6 flex items-baseline gap-3">
+          <span className="font-mono text-sm font-bold text-muted-foreground">
+            {nextSection()}
+          </span>
+          <h2 className="text-xs font-bold uppercase tracking-widest text-accent">
+            Contraseña
+          </h2>
+        </div>
+        <PasswordSection hasPassword={false} />
+      </section>
     </div>
   );
 }

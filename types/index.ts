@@ -108,6 +108,8 @@ export interface CartItem {
   rentalPrice?: number;
   /** Container capacity in product UoM (kg, m³, L). Used to calculate Odoo qty. */
   containerCapacity?: number;
+  /** Odoo gas.container ID — set when adding a specific container for refill */
+  containerId?: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -163,6 +165,10 @@ export interface CheckoutData {
   shippingAddressId?: number;
   /** Saved billing address ID */
   billingAddressId?: number;
+  /** Signal server to save CUIT/CUIL to commercial partner (field was not prefilled) */
+  saveVat?: boolean;
+  /** Signal server to save condición IVA to commercial partner (field was not prefilled) */
+  saveCondicionIva?: boolean;
 }
 
 /** A saved address for use in the checkout address selector */

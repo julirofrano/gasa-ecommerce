@@ -18,7 +18,7 @@ export default function CartPage() {
           <nav className="text-xs font-bold uppercase tracking-widest">
             <Link
               href={ROUTES.HOME}
-              className="text-muted-foreground transition-colors duration-200 hover:text-[#0094BB]"
+              className="text-muted-foreground transition-colors duration-200 hover:text-accent"
             >
               Inicio
             </Link>
@@ -31,7 +31,7 @@ export default function CartPage() {
       {/* ── Header ──────────────────────────────────────── */}
       <div className="border-b-4 border-foreground">
         <div className="container mx-auto px-4 py-10 md:py-14">
-          <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+          <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent">
             Su Pedido
           </p>
           <h1 className="text-4xl font-black uppercase tracking-tighter md:text-5xl">

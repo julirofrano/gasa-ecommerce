@@ -18,24 +18,16 @@ export default function CheckoutPendingPage() {
       <main>
         <div className="container mx-auto flex min-h-[60vh] items-center justify-center px-4 py-16 md:py-24">
           <div className="max-w-lg text-center">
-            {/* Icon */}
-            <div className="mx-auto mb-8 flex h-20 w-20 items-center justify-center border-4 border-foreground bg-background text-foreground">
-              <svg
-                className="h-10 w-10"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="square"
-                  strokeLinejoin="miter"
-                  strokeWidth={3}
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
+            {/* Spinner */}
+            <div className="mx-auto mb-8 relative h-20 w-20">
+              <div className="absolute inset-0 border-4 border-muted" />
+              <div
+                className="absolute inset-0 animate-spin border-4 border-transparent border-t-accent"
+                style={{ animationDuration: "0.8s" }}
+              />
             </div>
 
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent">
               Procesando Pago
             </p>
             <h1 className="text-4xl font-black uppercase tracking-tighter md:text-5xl">
@@ -49,7 +41,7 @@ export default function CheckoutPendingPage() {
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
               <Link
                 href={ROUTES.ACCOUNT_ORDERS}
-                className="border-2 border-foreground bg-foreground px-8 py-4 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-[#0094BB] hover:bg-[#0094BB]"
+                className="border-2 border-foreground bg-foreground px-8 py-4 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-accent hover:bg-accent"
               >
                 Ver Mis Pedidos
               </Link>

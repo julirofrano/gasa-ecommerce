@@ -56,13 +56,15 @@ export default async function CheckoutPage() {
   if (session?.user?.partnerId) {
     const partner = await getPartner(session.user.partnerId);
     if (partner) {
-      // Resolve company (child contact → parent)
+      // Resolve commercial partner (top-level company)
+      const commercialPartnerId =
+        session.user.commercialPartnerId ?? partner.commercial_partner_id[0];
       const company =
-        partner.is_company || !partner.parent_id
+        partner.id === commercialPartnerId
           ? partner
-          : await getPartner(partner.parent_id[0]);
+          : await getPartner(commercialPartnerId);
 
-      const companyId = company?.id ?? partner.id;
+      const companyId = commercialPartnerId;
 
       // Fetch saved addresses in parallel
       const [deliveryAddresses, invoiceAddresses] = await Promise.all([
@@ -112,14 +114,14 @@ export default async function CheckoutPage() {
             <nav className="text-xs font-bold uppercase tracking-widest">
               <Link
                 href={ROUTES.HOME}
-                className="text-muted-foreground transition-colors duration-200 hover:text-[#0094BB]"
+                className="text-muted-foreground transition-colors duration-200 hover:text-accent"
               >
                 Inicio
               </Link>
               <span className="mx-2 text-muted-foreground">/</span>
               <Link
                 href={ROUTES.CART}
-                className="text-muted-foreground transition-colors duration-200 hover:text-[#0094BB]"
+                className="text-muted-foreground transition-colors duration-200 hover:text-accent"
               >
                 Carrito
               </Link>
@@ -132,7 +134,7 @@ export default async function CheckoutPage() {
         {/* ── Header ──────────────────────────────────────── */}
         <div className="border-b-4 border-foreground">
           <div className="container mx-auto px-4 py-10 md:py-14">
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent">
               Paso Final
             </p>
             <h1 className="text-4xl font-black uppercase tracking-tighter md:text-5xl">

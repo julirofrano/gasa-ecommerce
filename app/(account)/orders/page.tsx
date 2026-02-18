@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Package } from "lucide-react";
-import { getRequiredSession } from "@/lib/auth/session";
+import { getRequiredSession, getCommercialPartnerId } from "@/lib/auth/session";
 import { getOrders } from "@/lib/odoo/orders";
-import { getPartner } from "@/lib/odoo/partners";
 import { ORDER_STATUS_LABELS } from "@/lib/utils/constants";
 import { formatCurrency, formatDate } from "@/lib/utils/formatting";
 import { StatusBadge } from "@/components/account/status-badge";
@@ -18,7 +17,9 @@ export const metadata: Metadata = {
 
 function getOrderStatusVariant(
   state: OdooSaleOrder["state"],
+  deliveryStatus?: OdooSaleOrder["delivery_status"],
 ): "default" | "accent" | "muted" {
+  if (state === "sale" && deliveryStatus !== "full") return "default";
   switch (state) {
     case "sale":
       return "accent";
@@ -29,6 +30,15 @@ function getOrderStatusVariant(
   }
 }
 
+function getOrderDisplayLabel(
+  state: OdooSaleOrder["state"],
+  deliveryStatus?: OdooSaleOrder["delivery_status"],
+): string {
+  if (state === "sale" && deliveryStatus !== "full")
+    return "Pendiente de Envío";
+  return ORDER_STATUS_LABELS[state] || state;
+}
+
 interface Props {
   searchParams: Promise<{ status?: string; q?: string }>;
 }
@@ -37,12 +47,8 @@ export default async function OrdersPage({ searchParams }: Props) {
   const session = await getRequiredSession();
   const { status, q } = await searchParams;
 
-  // Resolve parent company — orders may be linked to the company, not the contact
-  const partner = await getPartner(session.user.partnerId);
-  const partnerIds = partner?.parent_id
-    ? [session.user.partnerId, partner.parent_id[0]]
-    : [session.user.partnerId];
-  const orders = await getOrders(partnerIds);
+  const commercialPartnerId = await getCommercialPartnerId(session);
+  const orders = await getOrders(commercialPartnerId);
 
   if (orders.length === 0) {
     return (
@@ -63,12 +69,22 @@ export default async function OrdersPage({ searchParams }: Props) {
 
   // Stats reflect ALL orders (unfiltered)
   const totalOrders = orders.length;
-  const completedOrders = orders.filter((o) => o.state === "sale").length;
+  const completedOrders = orders.filter(
+    (o) => o.state === "sale" && o.delivery_status === "full",
+  ).length;
   const totalAmount = orders.reduce((sum, o) => sum + o.amount_total, 0);
 
   // Filter orders for the table
   let filtered = orders;
-  if (status) {
+  if (status === "pending_delivery") {
+    filtered = filtered.filter(
+      (o) => o.state === "sale" && o.delivery_status !== "full",
+    );
+  } else if (status === "completed") {
+    filtered = filtered.filter(
+      (o) => o.state === "sale" && o.delivery_status === "full",
+    );
+  } else if (status) {
     filtered = filtered.filter((o) => o.state === status);
   }
   if (q) {
@@ -148,8 +164,16 @@ export default async function OrdersPage({ searchParams }: Props) {
                       {formatDate(order.date_order)}
                     </td>
                     <td className="px-4 py-3">
-                      <StatusBadge variant={getOrderStatusVariant(order.state)}>
-                        {ORDER_STATUS_LABELS[order.state] || order.state}
+                      <StatusBadge
+                        variant={getOrderStatusVariant(
+                          order.state,
+                          order.delivery_status,
+                        )}
+                      >
+                        {getOrderDisplayLabel(
+                          order.state,
+                          order.delivery_status,
+                        )}
                       </StatusBadge>
                     </td>
                     <td className="px-4 py-3 text-right font-bold">
@@ -158,7 +182,7 @@ export default async function OrdersPage({ searchParams }: Props) {
                     <td className="px-4 py-3 text-right">
                       <Link
                         href={`/orders/${order.id}`}
-                        className="text-xs font-bold uppercase tracking-wide text-[#0094BB] transition-colors duration-200 hover:text-foreground"
+                        className="text-xs font-bold uppercase tracking-wide text-accent transition-colors duration-200 hover:text-foreground"
                       >
                         Ver detalle
                       </Link>

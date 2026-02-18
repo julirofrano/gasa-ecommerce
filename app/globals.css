@@ -164,6 +164,7 @@ body {
 /* ── Leaflet map overrides — Swiss design ── */
 .leaflet-container {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  z-index: 0;
 }
 
 .leaflet-control-zoom a {

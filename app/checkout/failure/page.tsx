@@ -19,7 +19,7 @@ export default function CheckoutFailurePage() {
         <div className="container mx-auto flex min-h-[60vh] items-center justify-center px-4 py-16 md:py-24">
           <div className="max-w-lg text-center">
             {/* Icon */}
-            <div className="mx-auto mb-8 flex h-20 w-20 items-center justify-center border-4 border-[#0094BB] bg-background text-[#0094BB]">
+            <div className="mx-auto mb-8 flex h-20 w-20 items-center justify-center border-4 border-accent bg-background text-accent">
               <svg
                 className="h-10 w-10"
                 fill="none"
@@ -35,7 +35,7 @@ export default function CheckoutFailurePage() {
               </svg>
             </div>
 
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent">
               Error de Pago
             </p>
             <h1 className="text-4xl font-black uppercase tracking-tighter md:text-5xl">
@@ -49,7 +49,7 @@ export default function CheckoutFailurePage() {
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
               <Link
                 href={ROUTES.CHECKOUT}
-                className="border-2 border-foreground bg-foreground px-8 py-4 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-[#0094BB] hover:bg-[#0094BB]"
+                className="border-2 border-foreground bg-foreground px-8 py-4 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-accent hover:bg-accent"
               >
                 Reintentar Pago
               </Link>

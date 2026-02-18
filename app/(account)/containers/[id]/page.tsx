@@ -10,10 +10,9 @@ import { formatDate } from "@/lib/utils/formatting";
 import {
   getContainerById,
   getContainerTransferHistory,
-  resolveOwnerPartnerId,
   getChildPartnerIds,
 } from "@/lib/odoo/containers";
-import { getRequiredSession } from "@/lib/auth/session";
+import { getRequiredSession, getCommercialPartnerId } from "@/lib/auth/session";
 import { StatusBadge } from "@/components/account/status-badge";
 import { Timeline } from "@/components/account/timeline";
 import type { OdooContainer } from "@/lib/odoo/types";
@@ -70,7 +69,7 @@ export default async function ContainerDetailPage({ params }: Props) {
     notFound();
   }
 
-  const ownerPartnerId = await resolveOwnerPartnerId(session.user.partnerId);
+  const ownerPartnerId = await getCommercialPartnerId(session);
   const childIds = await getChildPartnerIds(ownerPartnerId);
   const customerContactIds = new Set([ownerPartnerId, ...childIds]);
 
@@ -120,7 +119,7 @@ export default async function ContainerDetailPage({ params }: Props) {
       <nav className="mb-4 text-xs font-bold uppercase tracking-widest">
         <Link
           href={ROUTES.ACCOUNT_CONTAINERS}
-          className="text-muted-foreground transition-colors duration-200 hover:text-[#0094BB]"
+          className="text-muted-foreground transition-colors duration-200 hover:text-accent"
         >
           Mis Envases
         </Link>
@@ -142,7 +141,7 @@ export default async function ContainerDetailPage({ params }: Props) {
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Container Info */}
         <div className="border-2 border-foreground p-6 md:border-4 md:p-8">
-          <h2 className="mb-6 text-xs font-bold uppercase tracking-widest text-[#0094BB]">
+          <h2 className="mb-6 text-xs font-bold uppercase tracking-widest text-accent">
             Información del Envase
           </h2>
           <dl className="space-y-4 text-sm">
@@ -220,7 +219,7 @@ export default async function ContainerDetailPage({ params }: Props) {
         <div className="space-y-6">
           {/* Actions */}
           <div className="border-2 border-foreground p-6 md:border-4 md:p-8">
-            <h2 className="mb-6 text-xs font-bold uppercase tracking-widest text-[#0094BB]">
+            <h2 className="mb-6 text-xs font-bold uppercase tracking-widest text-accent">
               Acciones
             </h2>
             {isMasked ? (
@@ -230,7 +229,7 @@ export default async function ContainerDetailPage({ params }: Props) {
               </p>
             ) : (
               <div className="space-y-3">
-                <button className="w-full border-2 border-foreground bg-foreground px-4 py-4 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-[#0094BB] hover:bg-[#0094BB]">
+                <button className="w-full border-2 border-foreground bg-foreground px-4 py-4 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-accent hover:bg-accent">
                   Solicitar Recarga
                 </button>
                 <button className="w-full border-2 border-foreground bg-background px-4 py-4 text-sm font-bold uppercase tracking-wide text-foreground transition-colors duration-200 hover:bg-foreground hover:text-background">
@@ -242,7 +241,7 @@ export default async function ContainerDetailPage({ params }: Props) {
 
           {/* Timeline */}
           <div className="border-2 border-foreground p-6 md:border-4 md:p-8">
-            <h2 className="mb-6 text-xs font-bold uppercase tracking-widest text-[#0094BB]">
+            <h2 className="mb-6 text-xs font-bold uppercase tracking-widest text-accent">
               Historial
             </h2>
             {history.length > 0 ? (

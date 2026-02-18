@@ -11,7 +11,7 @@ import {
 
 const labelClass = "mb-2 block text-xs font-bold uppercase tracking-widest";
 const inputClass =
-  "w-full border-b-2 border-foreground bg-transparent px-0 py-3 text-sm focus:border-[#0094BB] focus:outline-none";
+  "w-full border-b-2 border-foreground bg-transparent px-0 py-3 text-sm focus:border-accent focus:outline-none";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -69,7 +69,7 @@ function MethodOption({
         checked={selected}
         disabled={disabled}
         onChange={() => onChange(method)}
-        className="mt-0.5 h-4 w-4 accent-[#0094BB]"
+        className="mt-0.5 h-4 w-4 accent-accent"
       />
       <div className="flex-1">
         <div className="flex items-center justify-between">
@@ -128,7 +128,7 @@ function BranchSelector({
 function ItemList({ items, label }: { items: CartItem[]; label: string }) {
   return (
     <div className="mb-4">
-      <p className="text-[10px] font-bold uppercase tracking-widest text-[#0094BB]">
+      <p className="text-[10px] font-bold uppercase tracking-widest text-accent">
         {label}
       </p>
       <p className="mt-1 text-xs text-muted-foreground">

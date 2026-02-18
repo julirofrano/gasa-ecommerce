@@ -61,7 +61,7 @@ export function CartItem({ item, variant }: CartItemProps) {
           />
         ) : gasCode ? (
           <span
-            className={`font-black tracking-tight text-[#0094BB] ${isCompact ? "text-sm" : "text-lg md:text-xl"}`}
+            className={`font-black tracking-tight text-accent ${isCompact ? "text-sm" : "text-lg md:text-xl"}`}
           >
             {gasCode}
           </span>
@@ -76,7 +76,7 @@ export function CartItem({ item, variant }: CartItemProps) {
       <div className="min-w-0 flex-1">
         <Link
           href={`/products/${item.slug}`}
-          className="line-clamp-1 text-sm font-bold uppercase tracking-wide transition-colors duration-200 hover:text-[#0094BB]"
+          className="line-clamp-1 text-sm font-bold uppercase tracking-wide transition-colors duration-200 hover:text-accent"
         >
           {item.name}
         </Link>
@@ -103,7 +103,7 @@ export function CartItem({ item, variant }: CartItemProps) {
               onClick={() =>
                 updateQuantity(item.id, item.quantity - 1, item.cartKey)
               }
-              className="px-2 py-1 transition-colors duration-200 hover:bg-[#0094BB] hover:text-background"
+              className="px-2 py-1 transition-colors duration-200 hover:bg-accent hover:text-background"
               aria-label="Disminuir cantidad"
             >
               <Minus className="h-3 w-3" />
@@ -115,7 +115,7 @@ export function CartItem({ item, variant }: CartItemProps) {
               onClick={() =>
                 updateQuantity(item.id, item.quantity + 1, item.cartKey)
               }
-              className="px-2 py-1 transition-colors duration-200 hover:bg-[#0094BB] hover:text-background"
+              className="px-2 py-1 transition-colors duration-200 hover:bg-accent hover:text-background"
               aria-label="Aumentar cantidad"
             >
               <Plus className="h-3 w-3" />

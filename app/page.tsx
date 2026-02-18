@@ -81,7 +81,7 @@ export default async function HomePage() {
         <HeroAnimated />
 
         {/* ── Ticker ───────────────────────────────────────────── */}
-        <div className="overflow-hidden border-b-4 border-foreground bg-[#0094BB]">
+        <div className="overflow-hidden border-b-4 border-foreground bg-accent">
           <div className="animate-marquee flex w-max py-3.5">
             {[0, 1].map((copy) =>
               tickerItems.map((item) => (
@@ -104,7 +104,7 @@ export default async function HomePage() {
               <div className="container mx-auto px-4">
                 <div className="mb-14 flex items-start justify-between">
                   <div>
-                    <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+                    <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent">
                       01 — Gases
                     </p>
                     <h2 className="text-4xl font-black uppercase tracking-tighter md:text-5xl">
@@ -114,7 +114,7 @@ export default async function HomePage() {
                   </div>
                   <Link
                     href={ROUTES.PRODUCTS}
-                    className="mt-2 hidden text-xs font-bold uppercase tracking-widest text-[#0094BB] transition-colors duration-200 hover:text-foreground md:block"
+                    className="mt-2 hidden text-xs font-bold uppercase tracking-widest text-accent transition-colors duration-200 hover:text-foreground md:block"
                   >
                     Ver Todos →
                   </Link>
@@ -125,10 +125,10 @@ export default async function HomePage() {
                     <Link
                       key={gas.slug}
                       href={`${ROUTES.PRODUCTS}/${gas.slug}`}
-                      className="group overflow-hidden bg-background transition-colors duration-300 hover:bg-[#0094BB] hover:text-background"
+                      className="group overflow-hidden bg-background transition-colors duration-300 hover:bg-accent hover:text-background"
                     >
                       <div className="flex aspect-[2/1] items-center justify-center bg-muted transition-colors duration-300 group-hover:bg-transparent">
-                        <span className="text-4xl font-black tracking-tighter text-[#0094BB] transition-colors duration-300 group-hover:text-background/30 md:text-5xl lg:text-6xl">
+                        <span className="text-4xl font-black tracking-tighter text-accent transition-colors duration-300 group-hover:text-background/30 md:text-5xl lg:text-6xl">
                           {getGasFormula(gas.id)}
                         </span>
                       </div>
@@ -146,7 +146,7 @@ export default async function HomePage() {
 
                 <Link
                   href={ROUTES.PRODUCTS}
-                  className="mt-8 inline-block text-xs font-bold uppercase tracking-widest text-[#0094BB] transition-colors duration-200 hover:text-foreground md:hidden"
+                  className="mt-8 inline-block text-xs font-bold uppercase tracking-widest text-accent transition-colors duration-200 hover:text-foreground md:hidden"
                 >
                   Ver Todos los Gases →
                 </Link>
@@ -161,7 +161,7 @@ export default async function HomePage() {
             <AnimateOnScroll>
               <div className="container mx-auto px-4">
                 <div className="mb-14">
-                  <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+                  <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent">
                     02 — Categorías
                   </p>
                   <h2 className="text-4xl font-black uppercase tracking-tighter md:text-5xl">
@@ -169,12 +169,14 @@ export default async function HomePage() {
                   </h2>
                 </div>
 
-                <div className="grid grid-cols-1 gap-px bg-foreground sm:grid-cols-2 lg:grid-cols-3">
+                <div
+                  className={`grid grid-cols-1 gap-px bg-foreground sm:grid-cols-2 ${categories.length > 2 ? "lg:grid-cols-3" : ""}`}
+                >
                   {categories.map((cat, i) => (
                     <Link
                       key={cat.slug}
                       href={`${ROUTES.CATEGORIES}/${cat.slug}`}
-                      className="group flex items-start gap-5 bg-background p-6 transition-colors duration-300 hover:bg-[#0094BB] hover:text-background md:p-8"
+                      className="group flex items-start gap-5 bg-background p-6 transition-colors duration-300 hover:bg-accent hover:text-background md:p-8"
                     >
                       <span className="text-2xl font-black tracking-tighter text-foreground/15 transition-colors duration-300 group-hover:text-background/20 md:text-3xl">
                         {String(i + 1).padStart(2, "0")}
@@ -183,7 +185,7 @@ export default async function HomePage() {
                         <h3 className="text-xs font-bold uppercase tracking-wide md:text-sm">
                           {cat.name}
                         </h3>
-                        <span className="mt-2 inline-block text-[10px] font-bold uppercase tracking-widest text-[#0094BB] transition-colors duration-300 group-hover:text-background md:text-xs">
+                        <span className="mt-2 inline-block text-[10px] font-bold uppercase tracking-widest text-accent transition-colors duration-300 group-hover:text-background md:text-xs">
                           Explorar →
                         </span>
                       </div>
@@ -201,7 +203,7 @@ export default async function HomePage() {
             <div className="container mx-auto px-4">
               <div className="mb-14 flex items-start justify-between">
                 <div>
-                  <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+                  <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent">
                     03 — Sectores
                   </p>
                   <h2 className="text-4xl font-black uppercase tracking-tighter md:text-5xl">
@@ -211,7 +213,7 @@ export default async function HomePage() {
                 </div>
                 <Link
                   href={ROUTES.INDUSTRIES}
-                  className="mt-2 hidden text-xs font-bold uppercase tracking-widest text-[#0094BB] transition-colors duration-200 hover:text-foreground md:block"
+                  className="mt-2 hidden text-xs font-bold uppercase tracking-widest text-accent transition-colors duration-200 hover:text-foreground md:block"
                 >
                   Ver Todas →
                 </Link>
@@ -222,7 +224,7 @@ export default async function HomePage() {
                   <Link
                     key={industry.slug}
                     href={`${ROUTES.INDUSTRIES}/${industry.slug}`}
-                    className="group flex gap-4 border-b-2 border-foreground p-5 transition-colors duration-300 hover:bg-[#0094BB] hover:text-background md:p-6"
+                    className="group flex gap-4 border-b-2 border-foreground p-5 transition-colors duration-300 hover:bg-accent hover:text-background md:p-6"
                   >
                     <span className="text-[10px] font-bold tracking-widest text-muted-foreground transition-colors duration-300 group-hover:text-background/40 md:text-xs">
                       {String(i + 1).padStart(2, "0")}
@@ -241,7 +243,7 @@ export default async function HomePage() {
 
               <Link
                 href={ROUTES.INDUSTRIES}
-                className="mt-8 inline-block text-xs font-bold uppercase tracking-widest text-[#0094BB] transition-colors duration-200 hover:text-foreground md:hidden"
+                className="mt-8 inline-block text-xs font-bold uppercase tracking-widest text-accent transition-colors duration-200 hover:text-foreground md:hidden"
               >
                 Ver Todas las Industrias →
               </Link>
@@ -259,7 +261,7 @@ export default async function HomePage() {
                     key={stat.label}
                     className="px-4 py-14 text-center md:px-8"
                   >
-                    <p className="text-4xl font-black tracking-tighter text-[#0094BB] md:text-5xl lg:text-6xl">
+                    <p className="text-4xl font-black tracking-tighter text-accent md:text-5xl lg:text-6xl">
                       <Counter value={stat.value} />
                     </p>
                     <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.2em] text-background/50 md:text-xs">
@@ -277,7 +279,7 @@ export default async function HomePage() {
           <AnimateOnScroll>
             <div className="container mx-auto px-4">
               <div className="mb-14">
-                <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+                <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent">
                   04 — Servicios
                 </p>
                 <h2 className="text-4xl font-black uppercase tracking-tighter md:text-5xl">
@@ -290,7 +292,7 @@ export default async function HomePage() {
                   <Link
                     key={service.href}
                     href={service.href}
-                    className="group flex flex-col justify-between bg-background p-8 transition-colors duration-300 hover:bg-[#0094BB] hover:text-background md:p-10"
+                    className="group flex flex-col justify-between bg-background p-8 transition-colors duration-300 hover:bg-accent hover:text-background md:p-10"
                   >
                     <div>
                       <span className="text-4xl font-black tracking-tighter text-foreground/10 transition-colors duration-300 group-hover:text-background/15 md:text-5xl">
@@ -303,7 +305,7 @@ export default async function HomePage() {
                         {service.description}
                       </p>
                     </div>
-                    <span className="mt-8 text-[10px] font-bold uppercase tracking-widest text-[#0094BB] transition-colors duration-300 group-hover:text-background md:text-xs">
+                    <span className="mt-8 text-[10px] font-bold uppercase tracking-widest text-accent transition-colors duration-300 group-hover:text-background md:text-xs">
                       Conocer Más →
                     </span>
                   </Link>
@@ -314,35 +316,37 @@ export default async function HomePage() {
         </section>
 
         {/* ── CTA ──────────────────────────────────────────────── */}
-        <section className="bg-[#0094BB] py-20 text-background">
-          <AnimateOnScroll>
-            <div className="container mx-auto px-4">
-              <div className="flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
-                <div>
-                  <p className="mb-4 text-xs font-bold uppercase tracking-[0.3em] text-background/50">
-                    Portal de Clientes
-                  </p>
-                  <h2 className="text-4xl font-black uppercase tracking-tighter md:text-5xl lg:text-6xl">
-                    ¿Necesita una
-                    <br />
-                    recarga de envase?
-                  </h2>
-                  <p className="mt-6 max-w-lg text-sm leading-relaxed text-background/70 md:text-base">
-                    Acceda a su portal de cliente para solicitar recargas,
-                    consultar el estado de sus envases y gestionar sus pedidos
-                    en línea.
-                  </p>
+        {process.env.NEXT_PUBLIC_ODOO_ENABLED !== "false" && (
+          <section className="bg-accent py-20 text-background">
+            <AnimateOnScroll>
+              <div className="container mx-auto px-4">
+                <div className="flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
+                  <div>
+                    <p className="mb-4 text-xs font-bold uppercase tracking-[0.3em] text-background/50">
+                      Portal de Clientes
+                    </p>
+                    <h2 className="text-4xl font-black uppercase tracking-tighter md:text-5xl lg:text-6xl">
+                      ¿Necesita una
+                      <br />
+                      recarga de envase?
+                    </h2>
+                    <p className="mt-6 max-w-lg text-sm leading-relaxed text-background/70 md:text-base">
+                      Acceda a su portal de cliente para solicitar recargas,
+                      consultar el estado de sus envases y gestionar sus pedidos
+                      en línea.
+                    </p>
+                  </div>
+                  <Link
+                    href={ROUTES.LOGIN}
+                    className="inline-flex shrink-0 items-center justify-center border-2 border-background bg-background px-10 py-4 text-sm font-bold uppercase tracking-wide text-accent transition-colors duration-200 hover:bg-foreground hover:text-background"
+                  >
+                    Acceder al Portal
+                  </Link>
                 </div>
-                <Link
-                  href={ROUTES.LOGIN}
-                  className="inline-flex shrink-0 items-center justify-center border-2 border-background bg-background px-10 py-4 text-sm font-bold uppercase tracking-wide text-[#0094BB] transition-colors duration-200 hover:bg-foreground hover:text-background"
-                >
-                  Acceder al Portal
-                </Link>
               </div>
-            </div>
-          </AnimateOnScroll>
-        </section>
+            </AnimateOnScroll>
+          </section>
+        )}
       </main>
       <Footer />
     </>

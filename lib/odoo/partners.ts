@@ -9,6 +9,7 @@ export async function getPartner(
     [partnerId],
     [
       "name",
+      "function",
       "email",
       "phone",
       "vat",
@@ -20,9 +21,11 @@ export async function getPartner(
       "country_id",
       "is_company",
       "parent_id",
+      "commercial_partner_id",
       "child_ids",
       "property_product_pricelist",
       "l10n_ar_afip_responsibility_type_id",
+      "default_warehouse_id",
       "partner_latitude",
       "partner_longitude",
     ],
@@ -144,6 +147,7 @@ export async function updatePartner(
   partnerId: number,
   data: Partial<{
     name: string;
+    function: string;
     email: string;
     phone: string;
     vat: string;
@@ -156,9 +160,43 @@ export async function updatePartner(
     country_id: number | false;
     partner_latitude: number;
     partner_longitude: number;
+    l10n_ar_afip_responsibility_type_id: number | false;
   }>,
 ): Promise<boolean> {
   return odooClient.write("res.partner", [partnerId], data);
+}
+
+/**
+ * Create a contact-type child of a company.
+ */
+export async function createCompanyContact(
+  companyId: number,
+  data: { name: string; function?: string; email?: string; phone?: string },
+): Promise<number> {
+  return odooClient.create("res.partner", {
+    parent_id: companyId,
+    type: "contact",
+    name: data.name,
+    function: data.function,
+    email: data.email,
+    phone: data.phone,
+  });
+}
+
+/**
+ * Fetch contact-type children of a company (people, not delivery/invoice addresses).
+ */
+export async function getCompanyContacts(
+  companyId: number,
+): Promise<OdooPartner[]> {
+  return odooClient.searchRead<OdooPartner>(
+    "res.partner",
+    [
+      ["parent_id", "=", companyId],
+      ["type", "=", "contact"],
+    ],
+    ["name", "function", "email", "phone", "user_ids"],
+  );
 }
 
 export async function getPartnerAddresses(
@@ -183,6 +221,7 @@ export async function getPartnerAddresses(
       "type",
       "partner_latitude",
       "partner_longitude",
+      "default_warehouse_id",
     ],
   );
 }

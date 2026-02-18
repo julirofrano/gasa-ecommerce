@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import type { OdooContainer } from "@/lib/odoo/types";
-import { CONTAINER_STATUS_LABELS } from "@/lib/utils/constants";
-import { StatusBadge } from "./status-badge";
+import { useState } from 'react';
+import type { OdooContainer } from '@/lib/odoo/types';
+import { CONTAINER_STATUS_LABELS } from '@/lib/utils/constants';
+import { StatusBadge } from './status-badge';
 
 interface PickupRequestModalProps {
   open: boolean;
@@ -15,17 +15,17 @@ interface PickupRequestModalProps {
 }
 
 function getContainerStatusVariant(
-  status: OdooContainer["status"],
-): "default" | "accent" | "muted" {
+  status: OdooContainer['status']
+): 'default' | 'accent' | 'muted' {
   switch (status) {
-    case "in_use":
-    case "full":
-      return "accent";
-    case "empty":
-    case "maintenance":
-      return "muted";
+    case 'in_use':
+    case 'full':
+      return 'accent';
+    case 'empty':
+    case 'maintenance':
+      return 'muted';
     default:
-      return "default";
+      return 'default';
   }
 }
 
@@ -37,7 +37,7 @@ export function PickupRequestModal({
   onClose,
   onSubmit,
 }: PickupRequestModalProps) {
-  const [notes, setNotes] = useState("");
+  const [notes, setNotes] = useState('');
 
   if (!open) return null;
 
@@ -52,7 +52,7 @@ export function PickupRequestModal({
       <div
         className="absolute inset-0 bg-foreground/50"
         onClick={onClose}
-        onKeyDown={(e) => e.key === "Escape" && onClose()}
+        onKeyDown={(e) => e.key === 'Escape' && onClose()}
         role="button"
         tabIndex={-1}
         aria-label="Cerrar"
@@ -63,8 +63,8 @@ export function PickupRequestModal({
         <div className="max-h-[90vh] overflow-y-auto p-6 md:p-8">
           {/* Header */}
           <div className="mb-6 flex items-center justify-between">
-            <h3 className="text-xs font-bold uppercase tracking-widest text-[#0094BB]">
-              Solicitar Retiro
+            <h3 className="text-xs font-bold uppercase tracking-widest text-accent">
+              Solicitar devolución
             </h3>
             <button
               type="button"
@@ -78,8 +78,8 @@ export function PickupRequestModal({
           {/* Container list */}
           <div className="mb-6 space-y-2">
             <p className="text-xs font-bold uppercase tracking-widest">
-              {containers.length}{" "}
-              {containers.length === 1 ? "envase" : "envases"}
+              {containers.length}{' '}
+              {containers.length === 1 ? 'envase' : 'envases'}
             </p>
             <div className="divide-y divide-foreground/10">
               {containers.map((c) => (
@@ -113,7 +113,7 @@ export function PickupRequestModal({
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 rows={3}
-                className="w-full resize-none border-b-2 border-foreground bg-transparent px-0 py-2 text-sm focus:border-[#0094BB] focus:outline-none"
+                className="w-full resize-none border-b-2 border-foreground bg-transparent px-0 py-2 text-sm focus:border-accent focus:outline-none"
                 placeholder="Indicaciones especiales para el retiro..."
               />
             </div>
@@ -128,9 +128,9 @@ export function PickupRequestModal({
               <button
                 type="submit"
                 disabled={loading}
-                className="border-2 border-foreground bg-foreground px-6 py-2 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-[#0094BB] hover:bg-[#0094BB] disabled:opacity-50"
+                className="border-2 border-foreground bg-foreground px-6 py-2 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-accent hover:bg-accent disabled:opacity-50"
               >
-                {loading ? "Enviando..." : "Confirmar Retiro"}
+                {loading ? 'Enviando...' : 'Confirmar Retiro'}
               </button>
               <button
                 type="button"

@@ -8,7 +8,6 @@ const footerColumns = [
     links: [
       { href: ROUTES.ABOUT, label: "Acerca de" },
       { href: ROUTES.INDUSTRIES, label: "Industrias" },
-      { href: ROUTES.CERTIFICATES, label: "Certificados" },
       { href: ROUTES.ETHICS, label: "Ética y Cumplimiento" },
     ],
   },
@@ -17,9 +16,7 @@ const footerColumns = [
     title: "Tienda",
     links: [
       { href: ROUTES.PRODUCTS, label: "Productos" },
-      { href: ROUTES.ACCOUNT_PROFILE, label: "Mi Cuenta" },
-      { href: ROUTES.ACCOUNT_ORDERS, label: "Mis Pedidos" },
-      { href: ROUTES.ACCOUNT_CONTAINERS, label: "Mis Envases" },
+      { href: ROUTES.CONTACT, label: "Contacto" },
     ],
   },
   {
@@ -47,7 +44,7 @@ export function Footer() {
               <br />
               Aconcagua
               <br />
-              <span className="text-[#0094BB]">S.A.</span>
+              <span className="text-accent">S.A.</span>
             </h2>
             <p className="mt-8 max-w-sm text-sm leading-relaxed text-background/50">
               Fabricación y distribución de gases industriales y medicinales
@@ -62,7 +59,7 @@ export function Footer() {
                 <p className="text-[10px] font-bold uppercase tracking-widest text-background/30">
                   {col.number}
                 </p>
-                <h3 className="mt-1 text-xs font-bold uppercase tracking-widest text-[#0094BB]">
+                <h3 className="mt-1 text-xs font-bold uppercase tracking-widest text-accent">
                   {col.title}
                 </h3>
                 <ul className="mt-5 space-y-0">
@@ -70,7 +67,7 @@ export function Footer() {
                     <li key={link.href}>
                       <Link
                         href={link.href}
-                        className="block border-b border-background/10 py-2.5 text-sm text-background/60 transition-colors duration-200 hover:text-[#0094BB]"
+                        className="block border-b border-background/10 py-2.5 text-sm text-background/60 transition-colors duration-200 hover:text-accent"
                       >
                         {link.label}
                       </Link>
@@ -92,7 +89,7 @@ export function Footer() {
             </p>
             <a
               href="tel:+5492613691623"
-              className="mt-1 block text-sm text-background/60 transition-colors duration-200 hover:text-[#0094BB]"
+              className="mt-1 block text-sm text-background/60 transition-colors duration-200 hover:text-accent"
             >
               +54 9 261 369-1623
             </a>
@@ -103,7 +100,7 @@ export function Footer() {
             </p>
             <a
               href="mailto:consultas@gasesaconcagua.com.ar"
-              className="mt-1 block text-sm text-background/60 transition-colors duration-200 hover:text-[#0094BB]"
+              className="mt-1 block text-sm text-background/60 transition-colors duration-200 hover:text-accent"
             >
               consultas@gasesaconcagua.com.ar
             </a>

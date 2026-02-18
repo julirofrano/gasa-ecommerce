@@ -21,7 +21,6 @@ import { getRequiredSession } from "@/lib/auth/session";
 import { verifyResourceOwnership } from "@/lib/auth/ownership";
 import type { ContainerTransferWithLines } from "@/lib/odoo/orders";
 import { StatusBadge } from "@/components/account/status-badge";
-import { ReorderButton } from "@/components/account/reorder-button";
 import type { OdooSaleOrder, OdooContainerTransfer } from "@/lib/odoo/types";
 
 interface Props {
@@ -30,7 +29,9 @@ interface Props {
 
 function getOrderStatusVariant(
   state: OdooSaleOrder["state"],
+  hasPartialDelivery: boolean,
 ): "default" | "accent" | "muted" {
+  if (state === "sale" && hasPartialDelivery) return "default";
   switch (state) {
     case "sale":
       return "accent";
@@ -39,6 +40,14 @@ function getOrderStatusVariant(
     default:
       return "default";
   }
+}
+
+function getOrderDisplayLabel(
+  state: OdooSaleOrder["state"],
+  hasPartialDelivery: boolean,
+): string {
+  if (state === "sale" && hasPartialDelivery) return "Pendiente de Envío";
+  return ORDER_STATUS_LABELS[state] || state;
 }
 
 function getTransferStateVariant(
@@ -160,7 +169,7 @@ export default async function OrderDetailPage({ params }: Props) {
       <nav className="text-xs font-bold uppercase tracking-widest">
         <Link
           href={ROUTES.ACCOUNT_ORDERS}
-          className="text-muted-foreground transition-colors duration-200 hover:text-[#0094BB]"
+          className="text-muted-foreground transition-colors duration-200 hover:text-accent"
         >
           Mis Pedidos
         </Link>
@@ -179,18 +188,20 @@ export default async function OrderDetailPage({ params }: Props) {
             <span className="font-mono text-sm font-bold text-muted-foreground">
               01
             </span>
-            <h2 className="text-xs font-bold uppercase tracking-widest text-[#0094BB]">
+            <h2 className="text-xs font-bold uppercase tracking-widest text-accent">
               Detalle
             </h2>
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <StatusBadge variant={getOrderStatusVariant(order.state)}>
-              {ORDER_STATUS_LABELS[order.state] || order.state}
+            <StatusBadge
+              variant={getOrderStatusVariant(order.state, hasPartialDelivery)}
+            >
+              {getOrderDisplayLabel(order.state, hasPartialDelivery)}
             </StatusBadge>
             <a
               href={`/api/documents/sale-order/${order.id}`}
               download
-              className="border-2 border-foreground bg-background px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-foreground transition-colors duration-200 hover:border-[#0094BB] hover:bg-[#0094BB] hover:text-white"
+              className="border-2 border-foreground bg-background px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-foreground transition-colors duration-200 hover:border-accent hover:bg-accent hover:text-white"
             >
               Descargar PDF &darr;
             </a>
@@ -198,7 +209,7 @@ export default async function OrderDetailPage({ params }: Props) {
               <a
                 href={`/api/documents/invoice/${invoices[0].id}`}
                 download
-                className="border-2 border-foreground bg-background px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-foreground transition-colors duration-200 hover:border-[#0094BB] hover:bg-[#0094BB] hover:text-white"
+                className="border-2 border-foreground bg-background px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-foreground transition-colors duration-200 hover:border-accent hover:bg-accent hover:text-white"
               >
                 Descargar Factura &darr;
               </a>
@@ -209,12 +220,11 @@ export default async function OrderDetailPage({ params }: Props) {
                   key={inv.id}
                   href={`/api/documents/invoice/${inv.id}`}
                   download
-                  className="border-2 border-foreground bg-background px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-foreground transition-colors duration-200 hover:border-[#0094BB] hover:bg-[#0094BB] hover:text-white"
+                  className="border-2 border-foreground bg-background px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-foreground transition-colors duration-200 hover:border-accent hover:bg-accent hover:text-white"
                 >
                   {inv.name} &darr;
                 </a>
               ))}
-            <ReorderButton lines={reorderLines} />
           </div>
         </div>
         <dl className="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -231,7 +241,7 @@ export default async function OrderDetailPage({ params }: Props) {
               Estado
             </dt>
             <dd className="text-sm font-bold">
-              {ORDER_STATUS_LABELS[order.state] || order.state}
+              {getOrderDisplayLabel(order.state, hasPartialDelivery)}
             </dd>
           </div>
           {order.payment_term_id && (
@@ -251,7 +261,7 @@ export default async function OrderDetailPage({ params }: Props) {
           <span className="font-mono text-sm font-bold text-muted-foreground">
             02
           </span>
-          <h2 className="text-xs font-bold uppercase tracking-widest text-[#0094BB]">
+          <h2 className="text-xs font-bold uppercase tracking-widest text-accent">
             Articulos
           </h2>
         </div>
@@ -278,7 +288,7 @@ export default async function OrderDetailPage({ params }: Props) {
                 {line.product_uom_qty}
               </p>
               <p
-                className={`text-sm md:col-span-2 md:text-right ${line.qty_delivered < line.product_uom_qty ? "text-[#0094BB] font-bold" : "text-muted-foreground"}`}
+                className={`text-sm md:col-span-2 md:text-right ${line.qty_delivered < line.product_uom_qty ? "text-accent font-bold" : "text-muted-foreground"}`}
               >
                 <span className="md:hidden">Entregado: </span>
                 {line.qty_delivered}
@@ -301,7 +311,7 @@ export default async function OrderDetailPage({ params }: Props) {
           <span className="font-mono text-sm font-bold text-muted-foreground">
             03
           </span>
-          <h2 className="text-xs font-bold uppercase tracking-widest text-[#0094BB]">
+          <h2 className="text-xs font-bold uppercase tracking-widest text-accent">
             Resumen
           </h2>
         </div>
@@ -329,7 +339,7 @@ export default async function OrderDetailPage({ params }: Props) {
 
         {hasPartialDelivery && (
           <dl className="mt-6 space-y-3 border-t-2 border-foreground/20 pt-6 text-sm">
-            <dt className="text-xs font-bold uppercase tracking-widest text-[#0094BB]">
+            <dt className="text-xs font-bold uppercase tracking-widest text-accent">
               Entregado
             </dt>
             <div className="flex justify-between">
@@ -340,7 +350,7 @@ export default async function OrderDetailPage({ params }: Props) {
               <dt className="text-muted-foreground">IVA</dt>
               <dd className="font-bold">{formatCurrency(deliveredTax)}</dd>
             </div>
-            <div className="flex justify-between border-t-2 border-foreground pt-3 text-lg font-black text-[#0094BB]">
+            <div className="flex justify-between border-t-2 border-foreground pt-3 text-lg font-black text-accent">
               <dt>Total Entregado</dt>
               <dd>{formatCurrency(deliveredTotal)}</dd>
             </div>
@@ -354,7 +364,7 @@ export default async function OrderDetailPage({ params }: Props) {
           <span className="font-mono text-sm font-bold text-muted-foreground">
             04
           </span>
-          <h2 className="text-xs font-bold uppercase tracking-widest text-[#0094BB]">
+          <h2 className="text-xs font-bold uppercase tracking-widest text-accent">
             Envio
           </h2>
         </div>
@@ -390,7 +400,7 @@ export default async function OrderDetailPage({ params }: Props) {
           <span className="font-mono text-sm font-bold text-muted-foreground">
             {containerTransfers.length > 0 ? "06" : "05"}
           </span>
-          <h2 className="text-xs font-bold uppercase tracking-widest text-[#0094BB]">
+          <h2 className="text-xs font-bold uppercase tracking-widest text-accent">
             Seguimiento
           </h2>
         </div>
@@ -437,7 +447,7 @@ function ContainerTransfersSection({
         <span className="font-mono text-sm font-bold text-muted-foreground">
           {sectionNumber}
         </span>
-        <h2 className="text-xs font-bold uppercase tracking-widest text-[#0094BB]">
+        <h2 className="text-xs font-bold uppercase tracking-widest text-accent">
           Envases
         </h2>
       </div>
@@ -465,7 +475,7 @@ function ContainerTransfersSection({
               <a
                 href={`/api/documents/container-transfer/${transfer.id}`}
                 download
-                className="text-xs font-bold uppercase tracking-wide text-[#0094BB] transition-colors duration-200 hover:text-foreground"
+                className="text-xs font-bold uppercase tracking-wide text-accent transition-colors duration-200 hover:text-foreground"
               >
                 Descargar PDF &darr;
               </a>

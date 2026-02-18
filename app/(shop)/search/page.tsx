@@ -48,9 +48,11 @@ export default async function SearchPage({ searchParams }: Props) {
   let products: Awaited<ReturnType<typeof searchShopProducts>> = [];
 
   try {
-    const session = await auth();
+    const odooEnabled = process.env.NEXT_PUBLIC_ODOO_ENABLED !== "false";
+    const session = odooEnabled ? await auth() : null;
     const pricelistId = session?.user?.pricelistId ?? undefined;
-    products = await searchShopProducts(query, { pricelistId });
+    const warehouseId = session?.user?.warehouseId ?? undefined;
+    products = await searchShopProducts(query, { pricelistId, warehouseId });
   } catch (error) {
     console.error("[GASA] Error al conectar con Odoo:", error);
   }
@@ -63,7 +65,7 @@ export default async function SearchPage({ searchParams }: Props) {
           <nav className="text-xs font-bold uppercase tracking-widest">
             <Link
               href={ROUTES.HOME}
-              className="text-muted-foreground transition-colors duration-200 hover:text-[#0094BB]"
+              className="text-muted-foreground transition-colors duration-200 hover:text-accent"
             >
               Inicio
             </Link>
@@ -75,7 +77,7 @@ export default async function SearchPage({ searchParams }: Props) {
 
       {/* ── Main Content ────────────────────────────────────── */}
       <div className="container mx-auto px-4 py-10 md:py-14">
-        <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+        <p className="text-xs font-bold uppercase tracking-[0.3em] text-accent">
           Resultados de Búsqueda
         </p>
         <h1 className="mt-2 text-4xl font-black uppercase tracking-tighter md:text-5xl">
@@ -97,7 +99,7 @@ export default async function SearchPage({ searchParams }: Props) {
             </p>
             <Link
               href={ROUTES.PRODUCTS}
-              className="mt-6 inline-flex items-center justify-center border-2 border-foreground bg-foreground px-8 py-3 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-[#0094BB] hover:bg-[#0094BB]"
+              className="mt-6 inline-flex items-center justify-center border-2 border-foreground bg-foreground px-8 py-3 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-accent hover:bg-accent"
             >
               Ver Todos los Productos
             </Link>
@@ -108,12 +110,12 @@ export default async function SearchPage({ searchParams }: Props) {
               <Link
                 key={product.id}
                 href={`${ROUTES.PRODUCTS}/${product.slug}`}
-                className="group overflow-hidden border-2 border-foreground bg-background transition-colors duration-300 hover:bg-[#0094BB] hover:text-background md:border-4"
+                className="group overflow-hidden border-2 border-foreground bg-background transition-colors duration-300 hover:bg-accent hover:text-background md:border-4"
               >
                 {product.type === "gas" ? (
                   <>
                     <div className="flex aspect-[2/1] items-center justify-center bg-muted transition-colors duration-300 group-hover:bg-transparent">
-                      <span className="text-4xl font-black tracking-tighter text-[#0094BB] transition-colors duration-300 group-hover:text-background/30 md:text-5xl">
+                      <span className="text-4xl font-black tracking-tighter text-accent transition-colors duration-300 group-hover:text-background/30 md:text-5xl">
                         {getGasFormula(product.id)}
                       </span>
                     </div>
@@ -126,7 +128,7 @@ export default async function SearchPage({ searchParams }: Props) {
                           Pureza {product.purity}
                         </p>
                       )}
-                      <span className="mt-3 inline-block text-[10px] font-bold uppercase tracking-widest text-[#0094BB] transition-colors duration-300 group-hover:text-background md:text-xs">
+                      <span className="mt-3 inline-block text-[10px] font-bold uppercase tracking-widest text-accent transition-colors duration-300 group-hover:text-background md:text-xs">
                         Ver Producto →
                       </span>
                     </div>
@@ -163,7 +165,7 @@ export default async function SearchPage({ searchParams }: Props) {
                       <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-muted-foreground transition-colors duration-300 group-hover:text-background/60">
                         {product.description}
                       </p>
-                      <span className="mt-3 inline-block text-[10px] font-bold uppercase tracking-widest text-[#0094BB] transition-colors duration-300 group-hover:text-background md:text-xs">
+                      <span className="mt-3 inline-block text-[10px] font-bold uppercase tracking-widest text-accent transition-colors duration-300 group-hover:text-background md:text-xs">
                         Ver Producto →
                       </span>
                     </div>

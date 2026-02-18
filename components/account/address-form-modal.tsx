@@ -85,7 +85,7 @@ export function AddressFormModal({
       {/* Panel */}
       <div className="relative w-full max-w-lg border-2 border-foreground bg-background p-6 md:border-4 md:p-8">
         <div className="mb-6 flex items-center justify-between">
-          <h3 className="text-xs font-bold uppercase tracking-widest text-[#0094BB]">
+          <h3 className="text-xs font-bold uppercase tracking-widest text-accent">
             {title}
           </h3>
           <button
@@ -147,7 +147,7 @@ export function AddressFormModal({
             <button
               type="submit"
               disabled={loading}
-              className="border-2 border-foreground bg-foreground px-6 py-2 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-[#0094BB] hover:bg-[#0094BB] disabled:opacity-50"
+              className="border-2 border-foreground bg-foreground px-6 py-2 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-accent hover:bg-accent disabled:opacity-50"
             >
               {loading ? "Guardando..." : "Guardar"}
             </button>
@@ -188,7 +188,7 @@ function Field({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         required={required}
-        className="w-full border-b-2 border-foreground bg-transparent px-0 py-2 text-sm focus:border-[#0094BB] focus:outline-none"
+        className="w-full border-b-2 border-foreground bg-transparent px-0 py-2 text-sm focus:border-accent focus:outline-none"
       />
     </div>
   );

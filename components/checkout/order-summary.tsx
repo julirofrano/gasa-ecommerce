@@ -183,7 +183,7 @@ export function OrderSummary() {
 
         <Link
           href={ROUTES.CART}
-          className="mt-6 block text-center text-xs font-bold uppercase tracking-wide text-[#0094BB] transition-colors duration-200 hover:text-foreground"
+          className="mt-6 block text-center text-xs font-bold uppercase tracking-wide text-accent transition-colors duration-200 hover:text-foreground"
         >
           Volver al Carrito
         </Link>

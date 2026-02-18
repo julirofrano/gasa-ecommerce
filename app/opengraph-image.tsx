@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { ACCENT_COLOR } from "@/lib/utils/constants";
 
 export const runtime = "edge";
 export const alt = "GASA - Gases Aconcagua S.A.";
@@ -27,7 +28,7 @@ export default function Image() {
           left: 0,
           right: 0,
           height: "8px",
-          backgroundColor: "#0094BB",
+          backgroundColor: ACCENT_COLOR,
         }}
       />
 
@@ -38,7 +39,7 @@ export default function Image() {
           fontWeight: 700,
           letterSpacing: "0.3em",
           textTransform: "uppercase",
-          color: "#0094BB",
+          color: ACCENT_COLOR,
           marginBottom: "20px",
         }}
       >

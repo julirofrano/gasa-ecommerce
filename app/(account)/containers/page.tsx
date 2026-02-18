@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { Container } from "lucide-react";
-import { getRequiredSession } from "@/lib/auth/session";
+import { getRequiredSession, getCommercialPartnerId } from "@/lib/auth/session";
 import {
   getContainers,
-  resolveOwnerPartnerId,
   getChildPartnerIds,
   splitContainersByOwnership,
 } from "@/lib/odoo/containers";
@@ -17,10 +16,10 @@ export const metadata: Metadata = {
 
 export default async function ContainersPage() {
   const session = await getRequiredSession();
-  const ownerPartnerId = await resolveOwnerPartnerId(session.user.partnerId);
+  const ownerPartnerId = await getCommercialPartnerId(session);
 
   const [containers, childIds] = await Promise.all([
-    getContainers(session.user.partnerId, 50, 0, ownerPartnerId),
+    getContainers(ownerPartnerId),
     getChildPartnerIds(ownerPartnerId),
   ]);
 

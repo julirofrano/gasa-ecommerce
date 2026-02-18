@@ -1,14 +1,18 @@
+import { redirect } from "next/navigation";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import Link from "next/link";
-import { ROUTES } from "@/lib/utils/constants";
+import { AUTH_ENABLED, ROUTES } from "@/lib/utils/constants";
 
 export default function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  if (!AUTH_ENABLED) {
+    redirect("/");
+  }
   return (
     <>
       <Header />
@@ -19,7 +23,7 @@ export default function AuthLayout({
           <div>
             <Link
               href={ROUTES.HOME}
-              className="text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB] transition-colors duration-200 hover:text-background"
+              className="text-xs font-bold uppercase tracking-[0.3em] text-accent transition-colors duration-200 hover:text-background"
             >
               Gases Aconcagua S.A.
             </Link>
@@ -29,7 +33,7 @@ export default function AuthLayout({
             <h2 className="text-6xl font-black uppercase leading-[0.88] tracking-tighter xl:text-7xl">
               Portal
               <br />
-              de <span className="text-[#0094BB]">clientes</span>
+              de <span className="text-accent">clientes</span>
             </h2>
             <p className="mt-8 max-w-sm text-sm leading-relaxed text-background/50">
               Acceda a su cuenta para gestionar pedidos, consultar precios y

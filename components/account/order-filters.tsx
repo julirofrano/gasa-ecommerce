@@ -7,7 +7,8 @@ import { cn } from "@/lib/utils";
 
 const TABS = [
   { label: "Todos", value: "" },
-  { label: "Completados", value: "sale" },
+  { label: "Pendientes", value: "pending_delivery" },
+  { label: "Completados", value: "completed" },
   { label: "Cancelados", value: "cancel" },
 ] as const;
 
@@ -59,7 +60,7 @@ export function OrderFilters() {
           onKeyDown={(e) => {
             if (e.key === "Enter") pushParams(activeStatus, query);
           }}
-          className="w-full border-b-2 border-foreground bg-transparent py-2 pl-6 pr-2 text-sm placeholder:text-muted-foreground focus:border-[#0094BB] focus:outline-none"
+          className="w-full border-b-2 border-foreground bg-transparent py-2 pl-6 pr-2 text-sm placeholder:text-muted-foreground focus:border-accent focus:outline-none"
         />
       </div>
     </div>

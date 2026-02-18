@@ -15,7 +15,7 @@ export function ThemeToggle() {
   if (!mounted) {
     return (
       <button
-        className="p-2 transition-colors duration-200 hover:text-[#0094BB]"
+        className="p-2 transition-colors duration-200 hover:text-accent"
         aria-label="Cambiar tema"
       >
         <Sun className="h-5 w-5" />
@@ -26,7 +26,7 @@ export function ThemeToggle() {
   return (
     <button
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="p-2 transition-colors duration-200 hover:text-[#0094BB]"
+      className="p-2 transition-colors duration-200 hover:text-accent"
       aria-label={
         theme === "dark" ? "Cambiar a modo claro" : "Cambiar a modo oscuro"
       }

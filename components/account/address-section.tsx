@@ -25,6 +25,7 @@ interface AddressSectionProps {
   addresses: OdooPartner[];
   emptyMessage: string;
   parentAddress: ParentAddress;
+  branchNames?: Record<number, string>;
 }
 
 function isMainAddress(addr: OdooPartner, parent: ParentAddress): boolean {
@@ -43,6 +44,7 @@ export function AddressSection({
   addresses,
   emptyMessage,
   parentAddress,
+  branchNames,
 }: AddressSectionProps) {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingAddress, setEditingAddress] = useState<OdooPartner | null>(
@@ -132,14 +134,14 @@ export function AddressSection({
           <span className="font-mono text-sm font-bold text-muted-foreground">
             {number}
           </span>
-          <h2 className="text-xs font-bold uppercase tracking-widest text-[#0094BB]">
+          <h2 className="text-xs font-bold uppercase tracking-widest text-accent">
             {title}
           </h2>
         </div>
         <button
           type="button"
           onClick={handleAdd}
-          className="text-xs font-bold uppercase tracking-wide text-[#0094BB] hover:text-foreground"
+          className="text-xs font-bold uppercase tracking-wide text-accent hover:text-foreground"
         >
           + Agregar Direccion
         </button>
@@ -151,18 +153,24 @@ export function AddressSection({
         <p className="text-sm text-muted-foreground">{emptyMessage}</p>
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {addresses.map((addr) => (
-            <AddressCard
-              key={addr.id}
-              address={addr}
-              type={type}
-              isMain={isMainAddress(addr, parentAddress)}
-              onEdit={() => handleEdit(addr)}
-              onDelete={() => handleDelete(addr.id)}
-              onConvert={() => handleConvert(addr.id)}
-              onSetMain={() => handleSetMain(addr.id)}
-            />
-          ))}
+          {addresses.map((addr) => {
+            const whId = addr.default_warehouse_id
+              ? addr.default_warehouse_id[0]
+              : undefined;
+            return (
+              <AddressCard
+                key={addr.id}
+                address={addr}
+                type={type}
+                isMain={isMainAddress(addr, parentAddress)}
+                branchName={whId ? branchNames?.[whId] : undefined}
+                onEdit={() => handleEdit(addr)}
+                onDelete={() => handleDelete(addr.id)}
+                onConvert={() => handleConvert(addr.id)}
+                onSetMain={() => handleSetMain(addr.id)}
+              />
+            );
+          })}
         </div>
       )}
 

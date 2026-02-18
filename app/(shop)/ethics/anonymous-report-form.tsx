@@ -33,7 +33,7 @@ export function AnonymousReportForm() {
   if (status === "sent") {
     return (
       <div className="border-2 border-foreground bg-muted p-8 md:border-4 md:p-12">
-        <p className="text-xs font-bold uppercase tracking-widest text-[#0094BB]">
+        <p className="text-xs font-bold uppercase tracking-widest text-accent">
           Confirmación
         </p>
         <p className="mt-4 text-2xl font-black uppercase tracking-tighter md:text-3xl">
@@ -46,7 +46,7 @@ export function AnonymousReportForm() {
         </p>
         <button
           onClick={() => setStatus("idle")}
-          className="mt-8 border-2 border-foreground bg-foreground px-8 py-3 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-[#0094BB] hover:bg-[#0094BB]"
+          className="mt-8 border-2 border-foreground bg-foreground px-8 py-3 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-accent hover:bg-accent"
         >
           Enviar Otro Reporte
         </button>
@@ -57,8 +57,8 @@ export function AnonymousReportForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       {/* Privacy notice */}
-      <div className="border-l-4 border-[#0094BB] bg-muted p-5">
-        <p className="text-xs font-bold uppercase tracking-widest text-[#0094BB]">
+      <div className="border-l-4 border-accent bg-muted p-5">
+        <p className="text-xs font-bold uppercase tracking-widest text-accent">
           Aviso de Privacidad
         </p>
         <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
@@ -74,13 +74,13 @@ export function AnonymousReportForm() {
           htmlFor="report-category"
           className="mb-2 block text-xs font-bold uppercase tracking-widest"
         >
-          Tipo de Reporte <span className="text-[#0094BB]">*</span>
+          Tipo de Reporte <span className="text-accent">*</span>
         </label>
         <select
           id="report-category"
           name="category"
           required
-          className="w-full appearance-none border-b-2 border-foreground bg-transparent py-2 text-sm focus:border-[#0094BB] focus:outline-none"
+          className="w-full appearance-none border-b-2 border-foreground bg-transparent py-2 text-sm focus:border-accent focus:outline-none"
           defaultValue=""
         >
           <option value="" disabled>
@@ -101,13 +101,13 @@ export function AnonymousReportForm() {
             htmlFor="report-severity"
             className="mb-2 block text-xs font-bold uppercase tracking-widest"
           >
-            Gravedad <span className="text-[#0094BB]">*</span>
+            Gravedad <span className="text-accent">*</span>
           </label>
           <select
             id="report-severity"
             name="severity"
             required
-            className="w-full appearance-none border-b-2 border-foreground bg-transparent py-2 text-sm focus:border-[#0094BB] focus:outline-none"
+            className="w-full appearance-none border-b-2 border-foreground bg-transparent py-2 text-sm focus:border-accent focus:outline-none"
             defaultValue=""
           >
             <option value="" disabled>
@@ -131,7 +131,7 @@ export function AnonymousReportForm() {
             type="date"
             id="report-date"
             name="incidentDate"
-            className="w-full border-b-2 border-foreground bg-transparent py-2 text-sm focus:border-[#0094BB] focus:outline-none"
+            className="w-full border-b-2 border-foreground bg-transparent py-2 text-sm focus:border-accent focus:outline-none"
           />
         </div>
       </div>
@@ -148,7 +148,7 @@ export function AnonymousReportForm() {
           type="text"
           id="report-location"
           name="location"
-          className="w-full border-b-2 border-foreground bg-transparent py-2 text-sm focus:border-[#0094BB] focus:outline-none"
+          className="w-full border-b-2 border-foreground bg-transparent py-2 text-sm focus:border-accent focus:outline-none"
           placeholder="Sucursal, área, departamento..."
         />
       </div>
@@ -159,14 +159,14 @@ export function AnonymousReportForm() {
           htmlFor="report-description"
           className="mb-2 block text-xs font-bold uppercase tracking-widest"
         >
-          Descripción del Incidente <span className="text-[#0094BB]">*</span>
+          Descripción del Incidente <span className="text-accent">*</span>
         </label>
         <textarea
           id="report-description"
           name="description"
           required
           rows={6}
-          className="w-full resize-none border-b-2 border-foreground bg-transparent py-2 text-sm leading-relaxed focus:border-[#0094BB] focus:outline-none"
+          className="w-full resize-none border-b-2 border-foreground bg-transparent py-2 text-sm leading-relaxed focus:border-accent focus:outline-none"
           placeholder="Describa los hechos con el mayor detalle posible: qué ocurrió, quiénes estuvieron involucrados, cuándo y dónde sucedió..."
         />
       </div>
@@ -186,7 +186,7 @@ export function AnonymousReportForm() {
           type="text"
           id="report-contact"
           name="contact"
-          className="w-full border-b-2 border-foreground bg-transparent py-2 text-sm focus:border-[#0094BB] focus:outline-none"
+          className="w-full border-b-2 border-foreground bg-transparent py-2 text-sm focus:border-accent focus:outline-none"
           placeholder="Email, teléfono, o cualquier medio de contacto..."
         />
       </div>
@@ -196,12 +196,12 @@ export function AnonymousReportForm() {
         <button
           type="submit"
           disabled={status === "sending"}
-          className="border-2 border-foreground bg-foreground px-10 py-4 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-[#0094BB] hover:bg-[#0094BB] disabled:opacity-50"
+          className="border-2 border-foreground bg-foreground px-10 py-4 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-accent hover:bg-accent disabled:opacity-50"
         >
           {status === "sending" ? "Enviando..." : "Enviar Reporte Anónimo"}
         </button>
         <p className="text-xs text-muted-foreground">
-          <span className="text-[#0094BB]">*</span> Campos obligatorios
+          <span className="text-accent">*</span> Campos obligatorios
         </p>
       </div>
     </form>

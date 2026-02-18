@@ -31,7 +31,7 @@ export function MarkEmptyButton({ containerId }: MarkEmptyButtonProps) {
         type="button"
         onClick={handleClick}
         disabled={loading}
-        className="border-2 border-foreground bg-background px-3 py-1 text-xs font-bold uppercase tracking-wide text-foreground transition-colors hover:bg-foreground hover:text-background disabled:opacity-50 group-hover:border-background group-hover:text-background group-hover:hover:bg-background group-hover:hover:text-[#0094BB]"
+        className="border-2 border-foreground bg-background px-3 py-1 text-xs font-bold uppercase tracking-wide text-foreground transition-colors hover:bg-foreground hover:text-background disabled:opacity-50 group-hover:border-background group-hover:text-background group-hover:hover:bg-background group-hover:hover:text-accent"
       >
         {loading ? "Enviando..." : "Marcar vacío"}
       </button>

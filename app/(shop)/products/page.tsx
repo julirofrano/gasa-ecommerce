@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { auth } from "@/auth";
 import { ROUTES } from "@/lib/utils/constants";
 import type { Product, ProductCategory } from "@/types";
 import {
@@ -24,9 +25,13 @@ export default async function ProductsPage() {
   let allProducts: Product[] = [];
 
   try {
+    const odooEnabled = process.env.NEXT_PUBLIC_ODOO_ENABLED !== "false";
+    const session = odooEnabled ? await auth() : null;
+    const warehouseId = session?.user?.warehouseId ?? undefined;
+
     [categories, allProducts] = await Promise.all([
       getShopCategories(),
-      getShopProducts({ limit: 500 }),
+      getShopProducts({ limit: 500, warehouseId }),
     ]);
   } catch (error) {
     console.error("[GASA] Error al conectar con Odoo:", error);
@@ -54,7 +59,7 @@ export default async function ProductsPage() {
           <nav className="text-xs font-bold uppercase tracking-widest">
             <Link
               href={ROUTES.HOME}
-              className="text-muted-foreground transition-colors duration-200 hover:text-[#0094BB]"
+              className="text-muted-foreground transition-colors duration-200 hover:text-accent"
             >
               Inicio
             </Link>
@@ -128,7 +133,7 @@ export default async function ProductsPage() {
                 <section key={cat.slug} id={cat.slug}>
                   <div className="mb-6 flex items-start justify-between">
                     <div>
-                      <p className="mb-2 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+                      <p className="mb-2 text-xs font-bold uppercase tracking-[0.3em] text-accent">
                         {String(catIndex + 1).padStart(2, "0")}
                       </p>
                       <h2 className="text-2xl font-black uppercase tracking-tighter md:text-3xl">
@@ -137,7 +142,7 @@ export default async function ProductsPage() {
                     </div>
                     <Link
                       href={`${ROUTES.CATEGORIES}/${cat.slug}`}
-                      className="mt-1 hidden text-xs font-bold uppercase tracking-widest text-[#0094BB] transition-colors duration-200 hover:text-foreground md:block"
+                      className="mt-1 hidden text-xs font-bold uppercase tracking-widest text-accent transition-colors duration-200 hover:text-foreground md:block"
                     >
                       Ver Categoría →
                     </Link>
@@ -148,12 +153,12 @@ export default async function ProductsPage() {
                       <Link
                         key={product.id}
                         href={`${ROUTES.PRODUCTS}/${product.slug}`}
-                        className="group overflow-hidden border-2 border-foreground bg-background transition-colors duration-300 hover:bg-[#0094BB] hover:text-background md:border-4"
+                        className="group overflow-hidden border-2 border-foreground bg-background transition-colors duration-300 hover:bg-accent hover:text-background md:border-4"
                       >
                         {product.type === "gas" ? (
                           <>
                             <div className="flex aspect-[2/1] items-center justify-center bg-muted transition-colors duration-300 group-hover:bg-transparent">
-                              <span className="text-4xl font-black tracking-tighter text-[#0094BB] transition-colors duration-300 group-hover:text-background/30 md:text-5xl">
+                              <span className="text-4xl font-black tracking-tighter text-accent transition-colors duration-300 group-hover:text-background/30 md:text-5xl">
                                 {getGasFormula(product.id)}
                               </span>
                             </div>
@@ -166,7 +171,7 @@ export default async function ProductsPage() {
                                   Pureza {product.purity}
                                 </p>
                               )}
-                              <span className="mt-3 inline-block text-[10px] font-bold uppercase tracking-widest text-[#0094BB] transition-colors duration-300 group-hover:text-background md:text-xs">
+                              <span className="mt-3 inline-block text-[10px] font-bold uppercase tracking-widest text-accent transition-colors duration-300 group-hover:text-background md:text-xs">
                                 Ver Producto →
                               </span>
                             </div>
@@ -203,7 +208,7 @@ export default async function ProductsPage() {
                               <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-muted-foreground transition-colors duration-300 group-hover:text-background/60">
                                 {product.description}
                               </p>
-                              <span className="mt-3 inline-block text-[10px] font-bold uppercase tracking-widest text-[#0094BB] transition-colors duration-300 group-hover:text-background md:text-xs">
+                              <span className="mt-3 inline-block text-[10px] font-bold uppercase tracking-widest text-accent transition-colors duration-300 group-hover:text-background md:text-xs">
                                 Ver Producto →
                               </span>
                             </div>
@@ -225,7 +230,7 @@ export default async function ProductsPage() {
 
                   <Link
                     href={`${ROUTES.CATEGORIES}/${cat.slug}`}
-                    className="mt-4 inline-block text-xs font-bold uppercase tracking-widest text-[#0094BB] transition-colors duration-200 hover:text-foreground md:hidden"
+                    className="mt-4 inline-block text-xs font-bold uppercase tracking-widest text-accent transition-colors duration-200 hover:text-foreground md:hidden"
                   >
                     Ver Categoría →
                   </Link>

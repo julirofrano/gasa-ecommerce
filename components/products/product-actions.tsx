@@ -89,7 +89,7 @@ export function ProductActions({
                   "border-2 px-4 py-2 text-sm font-bold uppercase tracking-wide transition-colors duration-200",
                   selectedVariant?.id === v.id
                     ? "border-foreground bg-foreground text-background"
-                    : "border-foreground bg-background text-foreground hover:border-[#0094BB] hover:text-[#0094BB]",
+                    : "border-foreground bg-background text-foreground hover:border-accent hover:text-accent",
                 )}
               >
                 {v.label}
@@ -104,7 +104,7 @@ export function ProductActions({
         <div className="flex items-center border-2 border-foreground">
           <button
             onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-            className="px-3 py-2 transition-colors duration-200 hover:bg-[#0094BB] hover:text-background"
+            className="px-3 py-2 transition-colors duration-200 hover:bg-accent hover:text-background"
             aria-label="Disminuir cantidad"
           >
             <Minus className="h-4 w-4" />
@@ -114,7 +114,7 @@ export function ProductActions({
           </span>
           <button
             onClick={() => setQuantity((q) => q + 1)}
-            className="px-3 py-2 transition-colors duration-200 hover:bg-[#0094BB] hover:text-background"
+            className="px-3 py-2 transition-colors duration-200 hover:bg-accent hover:text-background"
             aria-label="Aumentar cantidad"
           >
             <Plus className="h-4 w-4" />
@@ -122,7 +122,7 @@ export function ProductActions({
         </div>
         <button
           onClick={handleAddToCart}
-          className="flex-1 border-2 border-foreground bg-foreground px-6 py-2 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-[#0094BB] hover:bg-[#0094BB]"
+          className="flex-1 border-2 border-foreground bg-foreground px-6 py-2 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-accent hover:bg-accent"
         >
           Agregar al Carrito
         </button>

@@ -81,7 +81,7 @@ export function ContainersPageClient({
       {/* Owned Containers */}
       {owned.length > 0 && (
         <section className="mb-10">
-          <h2 className="mb-4 text-xs font-bold uppercase tracking-widest text-[#0094BB]">
+          <h2 className="mb-4 text-xs font-bold uppercase tracking-widest text-accent">
             Envases Propios
           </h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -105,7 +105,7 @@ export function ContainersPageClient({
       {/* In-Possession (Comodato) Containers */}
       {inPossession.length > 0 && (
         <section>
-          <h2 className="mb-4 text-xs font-bold uppercase tracking-widest text-[#0094BB]">
+          <h2 className="mb-4 text-xs font-bold uppercase tracking-widest text-accent">
             Envases en Comodato
           </h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

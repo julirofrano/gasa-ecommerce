@@ -1,63 +1,61 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import { ROUTES } from "@/lib/utils/constants";
-import { BreadcrumbJsonLd } from "@/components/seo/breadcrumb-json-ld";
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { ROUTES } from '@/lib/utils/constants';
+import { BreadcrumbJsonLd } from '@/components/seo/breadcrumb-json-ld';
 
 export const metadata: Metadata = {
-  title: "Acerca de Nosotros",
+  title: 'Acerca de Nosotros',
   description:
-    "Gases Aconcagua S.A. — Más de 20 años proveyendo gases industriales y medicinales en Mendoza, Argentina.",
-  alternates: { canonical: "/about" },
+    'Gases Aconcagua S.A. — Más de 20 años proveyendo gases industriales y medicinales en Mendoza, Argentina.',
+  alternates: { canonical: '/about' },
 };
 
 const values = [
   {
-    number: "01",
-    title: "Calidad Garantizada",
+    number: '01',
+    title: 'Calidad Garantizada',
     description:
-      "Productos certificados bajo normas ISO 9001 y ANMAT, asegurando la máxima pureza y confiabilidad en cada entrega.",
+      'Productos certificados bajo normas ISO 9001 y ANMAT, asegurando la máxima pureza y confiabilidad en cada entrega.',
   },
   {
-    number: "02",
-    title: "Atención Personalizada",
+    number: '02',
+    title: 'Atención Personalizada',
     description:
-      "Asesoramiento técnico especializado para cada industria, adaptando soluciones a las necesidades de cada cliente.",
+      'Asesoramiento técnico especializado para cada industria, adaptando soluciones a las necesidades de cada cliente.',
   },
   {
-    number: "03",
-    title: "Respuesta Rápida",
+    number: '03',
+    title: 'Respuesta Rápida',
     description:
-      "Logística propia con cobertura regional que garantiza entregas en tiempo y forma en toda la región de Cuyo.",
+      'Logística propia con cobertura regional que garantiza entregas en tiempo y forma en toda la región de Cuyo.',
   },
   {
-    number: "04",
-    title: "Innovación Continua",
+    number: '04',
+    title: 'Innovación Continua',
     description:
-      "Incorporación constante de nuevas tecnologías y procesos para ofrecer las mejores soluciones del mercado.",
+      'Incorporación constante de nuevas tecnologías y procesos para ofrecer las mejores soluciones del mercado.',
   },
 ];
 
 const stats = [
-  { value: "100%", label: "Empresa Argentina" },
-  { value: "24hs", label: "Tiempo de Respuesta" },
-  { value: "500+", label: "Clientes Activos" },
-  { value: "9", label: "Industrias Servidas" },
+  { value: '100%', label: 'Empresa Argentina' },
+  { value: '24hs', label: 'Tiempo de Respuesta' },
+  { value: '500+', label: 'Clientes Activos' },
+  { value: '9', label: 'Industrias Servidas' },
 ];
 
 const capabilities = [
-  "Fabricación de acetileno disuelto",
-  "Fraccionamiento de oxígeno, nitrógeno, argón y CO₂",
-  "Distribución de gases especiales y mezclas certificadas",
-  "Instalaciones centralizadas de gases industriales y medicinales",
-  "Oxigenoterapia domiciliaria con soporte técnico 24hs",
-  "Producción y distribución de hielo seco",
+  'Fabricación de acetileno disuelto',
+  'Fraccionamiento de oxígeno, nitrógeno, argón y CO₂',
+  'Distribución de gases especiales y mezclas certificadas',
+  'Instalaciones centralizadas de gases industriales y medicinales',
+  'Oxigenoterapia domiciliaria con soporte técnico 24hs',
+  'Producción y distribución de hielo seco',
 ];
 
 const coverage = [
-  { province: "Mendoza", role: "Sede Central" },
-  { province: "San Juan", role: "Distribución" },
-  { province: "San Luis", role: "Distribución" },
-  { province: "La Pampa", role: "Distribución" },
+  { province: 'Mendoza', role: 'Sede Central' },
+  { province: 'Malargüe', role: 'Sucursal' },
 ];
 
 export default function AboutPage() {
@@ -65,8 +63,8 @@ export default function AboutPage() {
     <div>
       <BreadcrumbJsonLd
         items={[
-          { name: "Inicio", href: "/" },
-          { name: "Acerca de Nosotros", href: "/about" },
+          { name: 'Inicio', href: '/' },
+          { name: 'Acerca de Nosotros', href: '/about' },
         ]}
       />
       {/* ── Breadcrumb ──────────────────────────────────────── */}
@@ -75,7 +73,7 @@ export default function AboutPage() {
           <nav className="text-xs font-bold uppercase tracking-widest">
             <Link
               href={ROUTES.HOME}
-              className="text-muted-foreground transition-colors duration-200 hover:text-[#0094BB]"
+              className="text-muted-foreground transition-colors duration-200 hover:text-accent"
             >
               Inicio
             </Link>
@@ -88,7 +86,7 @@ export default function AboutPage() {
       {/* ── Hero ─────────────────────────────────────────────── */}
       <section className="border-b-4 border-foreground">
         <div className="container mx-auto flex min-h-[60vh] flex-col justify-end px-4 pb-16 pt-24">
-          <p className="mb-6 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+          <p className="mb-6 text-xs font-bold uppercase tracking-[0.3em] text-accent">
             Gases Aconcagua S.A. — Mendoza, Argentina
           </p>
           <h1 className="max-w-5xl text-5xl font-black uppercase leading-[0.88] tracking-tighter sm:text-7xl md:text-8xl lg:text-[9rem]">
@@ -96,7 +94,7 @@ export default function AboutPage() {
             <br />
             años junto
             <br />
-            <span className="text-[#0094BB]">a la</span>
+            <span className="text-accent">a la</span>
             <br />
             industria
           </h1>
@@ -113,7 +111,7 @@ export default function AboutPage() {
           <div className="grid grid-cols-2 divide-x-2 divide-background/20 lg:grid-cols-4">
             {stats.map((stat) => (
               <div key={stat.label} className="px-4 py-14 text-center md:px-8">
-                <p className="text-4xl font-black tracking-tighter text-[#0094BB] md:text-5xl lg:text-6xl">
+                <p className="text-4xl font-black tracking-tighter text-accent md:text-5xl lg:text-6xl">
                   {stat.value}
                 </p>
                 <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.2em] text-background/50 md:text-xs">
@@ -130,7 +128,7 @@ export default function AboutPage() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col gap-12 md:flex-row md:gap-16">
             <div className="shrink-0 md:w-80 lg:w-96">
-              <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+              <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent">
                 01 — Nuestra Historia
               </p>
               <h2 className="text-4xl font-black uppercase tracking-tighter md:text-5xl">
@@ -151,8 +149,8 @@ export default function AboutPage() {
                 industriales y medicinales del país.
               </p>
               <p className="text-base leading-relaxed text-muted-foreground md:text-lg">
-                Hoy abastecemos a más de 500 clientes en Mendoza, San Juan, San
-                Luis y La Pampa. Nuestra operación incluye la fabricación de
+                Hoy abastecemos a más de 500 clientes en Mendoza, San Luis y
+                todo el país. Nuestra operación incluye la fabricación de
                 acetileno, el fraccionamiento de oxígeno, nitrógeno, argón y
                 CO₂, y la distribución de gases especiales y mezclas
                 certificadas.
@@ -171,7 +169,7 @@ export default function AboutPage() {
       <section className="border-b-4 border-foreground bg-muted py-20 pattern-dots">
         <div className="container mx-auto px-4">
           <div className="mb-14">
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent">
               02 — Valores
             </p>
             <h2 className="text-4xl font-black uppercase tracking-tighter md:text-5xl">
@@ -207,7 +205,7 @@ export default function AboutPage() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col gap-12 md:flex-row md:gap-16">
             <div className="shrink-0 md:w-80 lg:w-96">
-              <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+              <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent">
                 03 — Capacidades
               </p>
               <h2 className="text-4xl font-black uppercase tracking-tighter md:text-5xl">
@@ -221,7 +219,7 @@ export default function AboutPage() {
                   className="flex gap-4 border-b-2 border-foreground py-5 md:py-6"
                 >
                   <span className="text-[10px] font-bold tracking-widest text-muted-foreground md:text-xs">
-                    {String(i + 1).padStart(2, "0")}
+                    {String(i + 1).padStart(2, '0')}
                   </span>
                   <p className="text-sm font-bold uppercase tracking-wide md:text-base">
                     {cap}
@@ -234,10 +232,10 @@ export default function AboutPage() {
       </section>
 
       {/* ── Coverage ─────────────────────────────────────────── */}
-      <section className="border-b-4 border-foreground bg-muted py-20 pattern-dots">
+      {/* <section className="border-b-4 border-foreground bg-muted py-20 pattern-dots">
         <div className="container mx-auto px-4">
           <div className="mb-14">
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent">
               04 — Cobertura
             </p>
             <h2 className="text-4xl font-black uppercase tracking-tighter md:text-5xl">
@@ -258,15 +256,15 @@ export default function AboutPage() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* ── Vision ───────────────────────────────────────────── */}
       <section className="border-b-4 border-foreground bg-foreground py-20 text-background">
         <div className="container mx-auto px-4">
           <div className="flex flex-col gap-12 md:flex-row md:items-start md:gap-16">
             <div className="shrink-0 md:w-80 lg:w-96">
-              <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
-                05 — Visión
+              <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent">
+                04 — Visión
               </p>
               <h2 className="text-4xl font-black uppercase tracking-tighter md:text-5xl">
                 Hacia el
@@ -294,7 +292,7 @@ export default function AboutPage() {
       </section>
 
       {/* ── CTA ──────────────────────────────────────────────── */}
-      <section className="bg-[#0094BB] py-20 text-background">
+      <section className="bg-accent py-20 text-background">
         <div className="container mx-auto px-4">
           <div className="flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
             <div>
@@ -315,13 +313,13 @@ export default function AboutPage() {
             <div className="flex shrink-0 flex-col gap-4 sm:flex-row">
               <Link
                 href={ROUTES.PRODUCTS}
-                className="inline-flex items-center justify-center border-2 border-background bg-background px-10 py-4 text-sm font-bold uppercase tracking-wide text-[#0094BB] transition-colors duration-200 hover:bg-foreground hover:text-background"
+                className="inline-flex items-center justify-center border-2 border-background bg-background px-10 py-4 text-sm font-bold uppercase tracking-wide text-accent transition-colors duration-200 hover:bg-foreground hover:text-background"
               >
                 Ver Catálogo
               </Link>
               <Link
                 href={ROUTES.LOGIN}
-                className="inline-flex items-center justify-center border-2 border-background px-10 py-4 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:bg-background hover:text-[#0094BB]"
+                className="inline-flex items-center justify-center border-2 border-background px-10 py-4 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:bg-background hover:text-accent"
               >
                 Portal de Cliente
               </Link>

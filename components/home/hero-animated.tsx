@@ -15,14 +15,14 @@ export function HeroAnimated() {
   return (
     <section className="relative border-b-4 border-foreground">
       <div className="container mx-auto flex min-h-[90vh] flex-col justify-end px-4 pb-16 pt-24">
-        <p className="animate-hero-line mb-6 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+        <p className="animate-hero-line mb-6 text-xs font-bold uppercase tracking-[0.3em] text-accent">
           Gases Aconcagua S.A. — Mendoza, Argentina
         </p>
         <h1 className="max-w-6xl text-4xl font-black uppercase leading-[0.88] tracking-tighter sm:text-7xl md:text-8xl lg:text-[8rem]">
           {heroLines.map((line, i) => (
             <span
               key={i}
-              className={`animate-hero-line block ${line.accent ? 'text-[#0094BB]' : ''}`}
+              className={`animate-hero-line block ${line.accent ? 'text-accent' : ''}`}
               style={{ animationDelay: `${0.2 + i * 0.15}s` }}
             >
               {line.text}
@@ -41,7 +41,7 @@ export function HeroAnimated() {
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
               <Link
                 href={ROUTES.PRODUCTS}
-                className="inline-flex items-center justify-center border-2 border-foreground bg-foreground px-8 py-3.5 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-[#0094BB] hover:bg-[#0094BB]"
+                className="inline-flex items-center justify-center border-2 border-foreground bg-foreground px-8 py-3.5 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-accent hover:bg-accent"
               >
                 Ver Catálogo
               </Link>

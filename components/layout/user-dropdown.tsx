@@ -49,7 +49,7 @@ export function UserDropdown({ userName, companyName }: UserDropdownProps) {
     <div ref={ref} className="relative hidden md:block">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-2 p-2 text-xs font-bold uppercase tracking-widest transition-colors duration-200 hover:text-[#0094BB]"
+        className="flex items-center gap-2 p-2 text-xs font-bold uppercase tracking-widest transition-colors duration-200 hover:text-accent"
         aria-label="Mi cuenta"
         aria-expanded={open}
         aria-haspopup="true"
@@ -81,7 +81,7 @@ export function UserDropdown({ userName, companyName }: UserDropdownProps) {
                   key={item.href}
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className="flex items-center gap-3 border-b border-foreground/10 px-5 py-3 text-xs font-bold uppercase tracking-widest transition-colors duration-200 hover:bg-[#0094BB] hover:text-background"
+                  className="flex items-center gap-3 border-b border-foreground/10 px-5 py-3 text-xs font-bold uppercase tracking-widest transition-colors duration-200 hover:bg-accent hover:text-background"
                 >
                   <item.icon className="h-4 w-4" />
                   {item.label}

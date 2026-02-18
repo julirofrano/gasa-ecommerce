@@ -101,21 +101,21 @@ export default function IndustrialGasSystemsPage() {
           <nav className="text-xs font-bold uppercase tracking-widest">
             <Link
               href={ROUTES.HOME}
-              className="text-muted-foreground transition-colors duration-200 hover:text-[#0094BB]"
+              className="text-muted-foreground transition-colors duration-200 hover:text-accent"
             >
               Inicio
             </Link>
             <span className="mx-2 text-muted-foreground">/</span>
             <Link
               href={ROUTES.SERVICES}
-              className="text-muted-foreground transition-colors duration-200 hover:text-[#0094BB]"
+              className="text-muted-foreground transition-colors duration-200 hover:text-accent"
             >
               Servicios
             </Link>
             <span className="mx-2 text-muted-foreground">/</span>
             <Link
               href={ROUTES.SERVICES_GAS_SYSTEMS}
-              className="text-muted-foreground transition-colors duration-200 hover:text-[#0094BB]"
+              className="text-muted-foreground transition-colors duration-200 hover:text-accent"
             >
               Instalaciones
             </Link>
@@ -128,13 +128,13 @@ export default function IndustrialGasSystemsPage() {
       {/* ── Hero ─────────────────────────────────────────────── */}
       <section className="border-b-4 border-foreground">
         <div className="container mx-auto flex min-h-[50vh] flex-col justify-end px-4 pb-16 pt-24">
-          <p className="mb-6 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+          <p className="mb-6 text-xs font-bold uppercase tracking-[0.3em] text-accent">
             Instalaciones Industriales
           </p>
           <h1 className="text-4xl font-black uppercase tracking-tighter md:text-5xl lg:text-7xl">
             Sistemas de Gases
             <br />
-            <span className="text-[#0094BB]">Industriales</span>
+            <span className="text-accent">Industriales</span>
           </h1>
           <p className="mt-8 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
             Ingeniería, diseño e instalación de sistemas completos de gases
@@ -162,7 +162,7 @@ export default function IndustrialGasSystemsPage() {
       <section className="border-b-4 border-foreground py-20">
         <div className="container mx-auto px-4">
           <div className="mb-14">
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent">
               01 — Servicios
             </p>
             <h2 className="text-4xl font-black uppercase tracking-tighter md:text-5xl">
@@ -212,7 +212,7 @@ export default function IndustrialGasSystemsPage() {
       <section className="border-b-4 border-foreground bg-muted py-20 pattern-dots">
         <div className="container mx-auto px-4">
           <div className="mb-14">
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent">
               02 — Aplicaciones
             </p>
             <h2 className="text-4xl font-black uppercase tracking-tighter md:text-5xl">
@@ -243,7 +243,7 @@ export default function IndustrialGasSystemsPage() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col gap-12 md:flex-row md:gap-16">
             <div className="shrink-0 md:w-80 lg:w-96">
-              <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+              <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent">
                 03 — Especificaciones
               </p>
               <h2 className="text-4xl font-black uppercase tracking-tighter md:text-5xl">
@@ -258,7 +258,7 @@ export default function IndustrialGasSystemsPage() {
                   key={spec.label}
                   className="border-b-2 border-background/20 py-5 md:py-6"
                 >
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-[#0094BB] md:text-xs">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-accent md:text-xs">
                     {spec.label}
                   </p>
                   <p className="mt-2 text-sm leading-relaxed text-background/70 md:text-base">
@@ -272,7 +272,7 @@ export default function IndustrialGasSystemsPage() {
       </section>
 
       {/* ── CTA ──────────────────────────────────────────────── */}
-      <section className="bg-[#0094BB] py-20 text-background">
+      <section className="bg-accent py-20 text-background">
         <div className="container mx-auto px-4">
           <div className="flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
             <div>
@@ -292,13 +292,13 @@ export default function IndustrialGasSystemsPage() {
             <div className="flex shrink-0 flex-col gap-4 sm:flex-row">
               <Link
                 href={ROUTES.CONTACT}
-                className="inline-flex items-center justify-center border-2 border-background bg-background px-10 py-4 text-sm font-bold uppercase tracking-wide text-[#0094BB] transition-colors duration-200 hover:bg-foreground hover:text-background"
+                className="inline-flex items-center justify-center border-2 border-background bg-background px-10 py-4 text-sm font-bold uppercase tracking-wide text-accent transition-colors duration-200 hover:bg-foreground hover:text-background"
               >
                 Solicitar Cotización
               </Link>
               <a
                 href="mailto:ingenieria@gasesaconcagua.com.ar"
-                className="inline-flex items-center justify-center border-2 border-background px-10 py-4 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:bg-background hover:text-[#0094BB]"
+                className="inline-flex items-center justify-center border-2 border-background px-10 py-4 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:bg-background hover:text-accent"
               >
                 Email Ingeniería
               </a>

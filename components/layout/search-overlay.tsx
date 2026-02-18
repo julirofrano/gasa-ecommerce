@@ -70,12 +70,12 @@ export function SearchOverlay() {
               type="text"
               placeholder="Buscar productos..."
               autoComplete="off"
-              className="flex-1 border-b-2 border-foreground bg-transparent pb-1 text-lg font-bold uppercase tracking-wide placeholder:text-muted-foreground focus:border-[#0094BB] focus:outline-none"
+              className="flex-1 border-b-2 border-foreground bg-transparent pb-1 text-lg font-bold uppercase tracking-wide placeholder:text-muted-foreground focus:border-accent focus:outline-none"
             />
             <button
               type="button"
               onClick={closeSearch}
-              className="shrink-0 p-2 transition-colors duration-200 hover:text-[#0094BB]"
+              className="shrink-0 p-2 transition-colors duration-200 hover:text-accent"
               aria-label="Cerrar búsqueda"
             >
               <X className="h-5 w-5" />

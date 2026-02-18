@@ -1,11 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getRequiredSession } from "@/lib/auth/session";
+import { getRequiredSession, getCommercialPartnerId } from "@/lib/auth/session";
 import { odooClient } from "@/lib/odoo/client";
 import type { OdooContainer } from "@/lib/odoo/types";
 import {
-  resolveOwnerPartnerId,
   getChildPartnerIds,
   getContainerById,
   markContainerEmpty,
@@ -17,7 +16,7 @@ export async function markContainerEmptyAction(
 ): Promise<{ success: boolean; error?: string }> {
   try {
     const session = await getRequiredSession();
-    const ownerPartnerId = await resolveOwnerPartnerId(session.user.partnerId);
+    const ownerPartnerId = await getCommercialPartnerId(session);
 
     const container = await getContainerById(containerId);
     if (!container) {
@@ -73,7 +72,7 @@ export async function requestPickupAction(
     }
 
     const session = await getRequiredSession();
-    const ownerPartnerId = await resolveOwnerPartnerId(session.user.partnerId);
+    const ownerPartnerId = await getCommercialPartnerId(session);
     const childIds = await getChildPartnerIds(ownerPartnerId);
     const customerContactIds = new Set([ownerPartnerId, ...childIds]);
 

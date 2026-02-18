@@ -1,27 +1,12 @@
 import { odooClient } from "./client";
 import type { OdooInvoice, OdooInvoiceLine } from "./types";
 
-/**
- * Resolve the top-level company partner ID.
- * Invoices may be linked to the parent company or any of its child contacts.
- */
-async function resolveParentPartnerId(partnerId: number): Promise<number> {
-  const partners = await odooClient.read<{
-    parent_id: [number, string] | false;
-  }>("res.partner", [partnerId], ["parent_id"]);
-  const partner = partners[0];
-  if (partner?.parent_id) {
-    return partner.parent_id[0];
-  }
-  return partnerId;
-}
-
 export async function getInvoices(
-  partnerId: number,
+  commercialPartnerId: number,
   limit = 50,
   offset = 0,
 ): Promise<OdooInvoice[]> {
-  const parentId = await resolveParentPartnerId(partnerId);
+  const parentId = commercialPartnerId;
 
   return odooClient.searchRead<OdooInvoice>(
     "account.move",

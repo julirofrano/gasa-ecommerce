@@ -50,7 +50,7 @@ export default async function CheckoutSuccessPage({
               </svg>
             </div>
 
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent">
               Pedido Confirmado
             </p>
             <h1 className="text-4xl font-black uppercase tracking-tighter md:text-5xl">
@@ -71,7 +71,7 @@ export default async function CheckoutSuccessPage({
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
               <Link
                 href={ROUTES.ACCOUNT_ORDERS}
-                className="border-2 border-foreground bg-foreground px-8 py-4 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-[#0094BB] hover:bg-[#0094BB]"
+                className="border-2 border-foreground bg-foreground px-8 py-4 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:border-accent hover:bg-accent"
               >
                 Ver Mis Pedidos
               </Link>

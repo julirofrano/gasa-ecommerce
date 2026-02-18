@@ -6,7 +6,7 @@ import { ShoppingCart, Menu, Search, User, ChevronDown } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useCartStore } from "@/stores/cart-store";
 import { useUIStore } from "@/stores/ui-store";
-import { ROUTES } from "@/lib/utils/constants";
+import { AUTH_ENABLED, ODOO_ENABLED, ROUTES } from "@/lib/utils/constants";
 import { CartDrawer } from "@/components/cart/cart-drawer";
 import { CartPriceRefresher } from "@/components/cart/cart-price-refresher";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -56,13 +56,13 @@ export function Header() {
           <div className="flex items-center divide-x divide-background/20">
             <a
               href="tel:+5492613691623"
-              className="pr-4 text-[10px] font-bold uppercase tracking-widest text-background/50 transition-colors duration-200 hover:text-[#0094BB]"
+              className="pr-4 text-[10px] font-bold uppercase tracking-widest text-background/50 transition-colors duration-200 hover:text-accent"
             >
               +54 9 261 369-1623
             </a>
             <a
               href="mailto:consultas@gasesaconcagua.com.ar"
-              className="px-4 text-[10px] font-bold uppercase tracking-widest text-background/50 transition-colors duration-200 hover:text-[#0094BB]"
+              className="px-4 text-[10px] font-bold uppercase tracking-widest text-background/50 transition-colors duration-200 hover:text-accent"
             >
               consultas@gasesaconcagua.com.ar
             </a>
@@ -83,7 +83,7 @@ export function Header() {
           <div className="flex items-center gap-4">
             <button
               onClick={toggleMobileMenu}
-              className="p-2 transition-colors duration-200 hover:text-[#0094BB] md:hidden"
+              className="p-2 transition-colors duration-200 hover:text-accent md:hidden"
               aria-label="Abrir menú"
             >
               <Menu className="h-5 w-5" />
@@ -106,7 +106,7 @@ export function Header() {
                 <div key={item.href} className="group relative">
                   <Link
                     href={item.href}
-                    className="flex items-center gap-1 text-xs font-bold uppercase tracking-widest transition-colors duration-200 hover:text-[#0094BB]"
+                    className="flex items-center gap-1 text-xs font-bold uppercase tracking-widest transition-colors duration-200 hover:text-accent"
                   >
                     {item.label}
                     <ChevronDown className="h-3 w-3 transition-transform duration-200 group-hover:rotate-180" />
@@ -117,7 +117,7 @@ export function Header() {
                         <Link
                           key={child.href}
                           href={child.href}
-                          className="block border-b border-foreground/10 px-5 py-3 text-xs font-bold uppercase tracking-widest transition-colors duration-200 last:border-b-0 hover:bg-[#0094BB] hover:text-background"
+                          className="block border-b border-foreground/10 px-5 py-3 text-xs font-bold uppercase tracking-widest transition-colors duration-200 last:border-b-0 hover:bg-accent hover:text-background"
                         >
                           {child.label}
                         </Link>
@@ -129,7 +129,7 @@ export function Header() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="text-xs font-bold uppercase tracking-widest transition-colors duration-200 hover:text-[#0094BB]"
+                  className="text-xs font-bold uppercase tracking-widest transition-colors duration-200 hover:text-accent"
                 >
                   {item.label}
                 </Link>
@@ -144,7 +144,7 @@ export function Header() {
             </div>
             <button
               onClick={toggleSearch}
-              className="p-2 transition-colors duration-200 hover:text-[#0094BB]"
+              className="p-2 transition-colors duration-200 hover:text-accent"
               aria-label="Buscar"
             >
               <Search className="h-5 w-5" />
@@ -154,32 +154,38 @@ export function Header() {
                 userName={session.user.name || "Mi Cuenta"}
                 companyName={session.user.companyName}
               />
-            ) : (
+            ) : AUTH_ENABLED ? (
               <Link
                 href={ROUTES.LOGIN}
-                className="hidden items-center gap-2 p-2 text-xs font-bold uppercase tracking-widest transition-colors duration-200 hover:text-[#0094BB] md:flex"
+                className="hidden items-center gap-2 p-2 text-xs font-bold uppercase tracking-widest transition-colors duration-200 hover:text-accent md:flex"
               >
                 <User className="h-5 w-5" />
                 <span>Ingresar</span>
               </Link>
+            ) : null}
+            {ODOO_ENABLED && (
+              <button
+                onClick={toggleCart}
+                className="relative p-2 transition-colors duration-200 hover:text-accent"
+                aria-label="Carrito"
+              >
+                <ShoppingCart className="h-5 w-5" />
+                {itemCount > 0 && (
+                  <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center bg-accent text-[10px] font-bold text-background">
+                    {itemCount}
+                  </span>
+                )}
+              </button>
             )}
-            <button
-              onClick={toggleCart}
-              className="relative p-2 transition-colors duration-200 hover:text-[#0094BB]"
-              aria-label="Carrito"
-            >
-              <ShoppingCart className="h-5 w-5" />
-              {itemCount > 0 && (
-                <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center bg-[#0094BB] text-[10px] font-bold text-background">
-                  {itemCount}
-                </span>
-              )}
-            </button>
           </div>
         </div>
       </header>
-      <CartDrawer />
-      <CartPriceRefresher />
+      {ODOO_ENABLED && (
+        <>
+          <CartDrawer />
+          <CartPriceRefresher />
+        </>
+      )}
       <SearchOverlay />
     </>
   );

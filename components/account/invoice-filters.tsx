@@ -60,7 +60,7 @@ export function InvoiceFilters() {
           onKeyDown={(e) => {
             if (e.key === "Enter") pushParams(activePaymentState, query);
           }}
-          className="w-full border-b-2 border-foreground bg-transparent py-2 pl-6 pr-2 text-sm placeholder:text-muted-foreground focus:border-[#0094BB] focus:outline-none"
+          className="w-full border-b-2 border-foreground bg-transparent py-2 pl-6 pr-2 text-sm placeholder:text-muted-foreground focus:border-accent focus:outline-none"
         />
       </div>
     </div>

@@ -27,8 +27,17 @@ export function PaymentVerifier({
 
   if (loading) {
     return (
-      <div className="mt-4 text-sm text-muted-foreground">
-        Verificando pago...
+      <div className="mt-6 flex flex-col items-center gap-4">
+        <div className="relative h-10 w-10">
+          <div className="absolute inset-0 border-2 border-muted" />
+          <div
+            className="absolute inset-0 animate-spin border-2 border-transparent border-t-accent"
+            style={{ animationDuration: "0.8s" }}
+          />
+        </div>
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground">
+          Verificando pago
+        </p>
       </div>
     );
   }

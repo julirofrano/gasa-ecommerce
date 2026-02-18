@@ -121,7 +121,7 @@ export default function EthicsPage() {
           <nav className="text-xs font-bold uppercase tracking-widest">
             <Link
               href={ROUTES.HOME}
-              className="text-muted-foreground transition-colors duration-200 hover:text-[#0094BB]"
+              className="text-muted-foreground transition-colors duration-200 hover:text-accent"
             >
               Inicio
             </Link>
@@ -134,13 +134,13 @@ export default function EthicsPage() {
       {/* ── Hero ─────────────────────────────────────────────── */}
       <section className="border-b-4 border-foreground">
         <div className="container mx-auto flex min-h-[55vh] flex-col justify-end px-4 pb-16 pt-24">
-          <p className="mb-6 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+          <p className="mb-6 text-xs font-bold uppercase tracking-[0.3em] text-accent">
             Gobierno Corporativo — Gases Aconcagua S.A.
           </p>
           <h1 className="max-w-5xl text-5xl font-black uppercase leading-[0.88] tracking-tighter sm:text-7xl md:text-8xl lg:text-[8rem]">
             Ética y
             <br />
-            <span className="text-[#0094BB]">cumplimiento</span>
+            <span className="text-accent">cumplimiento</span>
             <br />
             normativo
           </h1>
@@ -158,7 +158,7 @@ export default function EthicsPage() {
           <div className="grid grid-cols-1 gap-px bg-background/20 sm:grid-cols-3">
             {channels.map((channel) => (
               <div key={channel.label} className="bg-foreground p-6 md:p-8">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-[#0094BB] md:text-xs">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-accent md:text-xs">
                   {channel.label}
                 </p>
                 <p className="mt-2 text-sm font-bold md:text-base">
@@ -177,7 +177,7 @@ export default function EthicsPage() {
       <section className="border-b-4 border-foreground py-20">
         <div className="container mx-auto px-4">
           <div className="mb-14">
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent">
               01 — Principios Éticos
             </p>
             <h2 className="text-4xl font-black uppercase tracking-tighter md:text-5xl">
@@ -212,7 +212,7 @@ export default function EthicsPage() {
       <section className="border-b-4 border-foreground bg-muted py-20 pattern-dots">
         <div className="container mx-auto px-4">
           <div className="mb-14">
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent">
               02 — Programa de Cumplimiento
             </p>
             <h2 className="text-4xl font-black uppercase tracking-tighter md:text-5xl">
@@ -255,7 +255,7 @@ export default function EthicsPage() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col gap-12 md:flex-row md:gap-16">
             <div className="shrink-0 md:w-80 lg:w-96">
-              <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+              <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent">
                 03 — Compromisos
               </p>
               <h2 className="text-4xl font-black uppercase tracking-tighter md:text-5xl">
@@ -291,7 +291,7 @@ export default function EthicsPage() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col gap-12 md:flex-row md:gap-16">
             <div className="shrink-0 md:sticky md:top-24 md:w-80 md:self-start lg:w-96">
-              <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#0094BB]">
+              <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent">
                 04 — Canal de Denuncias
               </p>
               <h2 className="text-4xl font-black uppercase tracking-tighter md:text-5xl">
@@ -330,7 +330,7 @@ export default function EthicsPage() {
       </section>
 
       {/* ── CTA ──────────────────────────────────────────────── */}
-      <section className="bg-[#0094BB] py-20 text-background">
+      <section className="bg-accent py-20 text-background">
         <div className="container mx-auto px-4">
           <div className="flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
             <div>
@@ -348,13 +348,13 @@ export default function EthicsPage() {
             <div className="flex shrink-0 flex-col gap-4 sm:flex-row">
               <Link
                 href={ROUTES.CONTACT}
-                className="inline-flex items-center justify-center border-2 border-background bg-background px-10 py-4 text-sm font-bold uppercase tracking-wide text-[#0094BB] transition-colors duration-200 hover:bg-foreground hover:text-background"
+                className="inline-flex items-center justify-center border-2 border-background bg-background px-10 py-4 text-sm font-bold uppercase tracking-wide text-accent transition-colors duration-200 hover:bg-foreground hover:text-background"
               >
                 Contacto General
               </Link>
               <a
                 href="#canal-de-denuncias"
-                className="inline-flex items-center justify-center border-2 border-background px-10 py-4 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:bg-background hover:text-[#0094BB]"
+                className="inline-flex items-center justify-center border-2 border-background px-10 py-4 text-sm font-bold uppercase tracking-wide text-background transition-colors duration-200 hover:bg-background hover:text-accent"
               >
                 Canal de Denuncias
               </a>

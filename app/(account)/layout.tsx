@@ -24,7 +24,11 @@ export default async function AccountLayout({
         <div className="flex flex-col gap-8 md:flex-row md:gap-12">
           <AccountSidebar
             userName={session.user.name}
-            companyName={session.user.companyName}
+            companyName={
+              session.user.companyName === session.user.name
+                ? ""
+                : session.user.companyName
+            }
             email={session.user.email}
           />
           <main className="min-h-[60vh] flex-1">{children}</main>

@@ -10,7 +10,7 @@ interface StatusBadgeProps {
 
 const variantStyles: Record<BadgeVariant, string> = {
   default: "bg-foreground text-background",
-  accent: "bg-[#0094BB] text-white",
+  accent: "bg-accent text-white",
   muted: "bg-muted text-muted-foreground",
 };
 

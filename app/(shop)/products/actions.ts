@@ -24,7 +24,8 @@ export async function getCustomerContainersForProduct(
       .filter(
         (c) =>
           Array.isArray(c.associated_product) &&
-          c.associated_product[0] === productId,
+          c.associated_product[0] === productId &&
+          c.location === "customer",
       )
       .map((c) => ({
         id: c.id,

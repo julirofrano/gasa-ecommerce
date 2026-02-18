@@ -8,6 +8,7 @@ interface AddressCardProps {
   address: OdooPartner;
   type: "delivery" | "invoice";
   isMain: boolean;
+  branchName?: string;
   onEdit: () => void;
   onDelete: () => void;
   onConvert: () => void;
@@ -18,6 +19,7 @@ export function AddressCard({
   address,
   type,
   isMain,
+  branchName,
   onEdit,
   onDelete,
   onConvert,
@@ -28,12 +30,12 @@ export function AddressCard({
     type === "delivery" ? "Copiar a Facturacion" : "Copiar a Envio";
   return (
     <div
-      className={`border-2 p-4 ${isMain ? "border-[#0094BB]" : "border-foreground/20"}`}
+      className={`border-2 p-4 ${isMain ? "border-accent" : "border-foreground/20"}`}
     >
       <div className="mb-2 flex items-center gap-2">
         <p className="text-sm font-bold">{address.name}</p>
         {isMain && (
-          <span className="bg-[#0094BB] px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-white">
+          <span className="bg-accent px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-white">
             Principal
           </span>
         )}
@@ -48,24 +50,22 @@ export function AddressCard({
         </p>
         {address.phone && <p>{address.phone}</p>}
       </div>
+      {branchName && (
+        <div className="mb-3 flex items-center gap-2">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+            Sucursal
+          </span>
+          <span className="text-xs font-bold">{branchName}</span>
+        </div>
+      )}
       <div className="flex items-center gap-4">
         <button
           type="button"
           onClick={onEdit}
-          className="text-xs font-bold uppercase tracking-wide text-[#0094BB] hover:text-foreground"
+          className="text-xs font-bold uppercase tracking-wide text-accent hover:text-foreground"
         >
           Editar
         </button>
-        <AddressMapWrapper
-          partnerId={address.id}
-          street={address.street}
-          city={address.city}
-          state={address.state_id?.[1]}
-          zip={address.zip}
-          country={address.country_id?.[1]}
-          savedLat={address.partner_latitude}
-          savedLng={address.partner_longitude}
-        />
         <div className="relative ml-auto">
           <button
             type="button"
@@ -123,6 +123,16 @@ export function AddressCard({
           )}
         </div>
       </div>
+      <AddressMapWrapper
+        partnerId={address.id}
+        street={address.street}
+        city={address.city}
+        state={address.state_id?.[1]}
+        zip={address.zip}
+        country={address.country_id?.[1]}
+        savedLat={address.partner_latitude}
+        savedLng={address.partner_longitude}
+      />
     </div>
   );
 }

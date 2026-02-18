@@ -50,7 +50,7 @@ export function AddressSelector({
                 value={addr.id}
                 checked={selected}
                 onChange={() => onChange(addr.id)}
-                className="mt-0.5 h-4 w-4 shrink-0 accent-[#0094BB]"
+                className="mt-0.5 h-4 w-4 shrink-0 accent-accent"
               />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
@@ -116,7 +116,7 @@ export function AddressSelector({
           value="new"
           checked={selectedId === "new"}
           onChange={() => onChange("new")}
-          className="h-4 w-4 shrink-0 accent-[#0094BB]"
+          className="h-4 w-4 shrink-0 accent-accent"
         />
         <span className="text-sm font-bold">+ Nueva direccion</span>
       </label>

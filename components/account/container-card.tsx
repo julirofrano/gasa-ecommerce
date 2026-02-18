@@ -53,14 +53,14 @@ function CardContent({
         </span>
         <StatusBadge
           variant={getContainerStatusVariant(container.status)}
-          className="transition-colors duration-200 group-hover:bg-background group-hover:text-[#0094BB]"
+          className="transition-colors duration-200 group-hover:bg-background group-hover:text-accent"
         >
           {CONTAINER_STATUS_LABELS[container.status] || container.status}
         </StatusBadge>
       </div>
       <p className="font-bold">{gasType}</p>
       {ownership === "possession" && (
-        <p className="mt-1 text-xs font-bold uppercase tracking-widest text-[#0094BB] transition-colors duration-200 group-hover:text-background/70">
+        <p className="mt-1 text-xs font-bold uppercase tracking-widest text-accent transition-colors duration-200 group-hover:text-background/70">
           En comodato
         </p>
       )}
@@ -91,7 +91,7 @@ export function ContainerCard({
     return (
       <Link
         href={`/containers/${container.id}`}
-        className="group border-2 border-foreground bg-background p-5 transition-colors duration-200 hover:bg-[#0094BB] hover:text-background md:border-4"
+        className="group border-2 border-foreground bg-background p-5 transition-colors duration-200 hover:bg-accent hover:text-background md:border-4"
       >
         <CardContent container={container} ownership={ownership} />
       </Link>
@@ -102,7 +102,7 @@ export function ContainerCard({
   return (
     <div
       className={`group flex border-2 bg-background transition-colors duration-200 md:border-4 ${
-        selected ? "border-[#0094BB] bg-[#0094BB]/5" : "border-foreground"
+        selected ? "border-accent bg-accent/5" : "border-foreground"
       }`}
     >
       {/* Checkbox zone */}
@@ -113,7 +113,7 @@ export function ContainerCard({
           e.stopPropagation();
           onToggleSelect?.(container.id);
         }}
-        className="flex w-12 shrink-0 items-center justify-center border-r-2 border-inherit transition-colors hover:bg-[#0094BB]/10"
+        className="flex w-12 shrink-0 items-center justify-center border-r-2 border-inherit transition-colors hover:bg-accent/10"
         aria-label={
           selected
             ? `Deseleccionar envase ${container.serial_number}`
@@ -123,7 +123,7 @@ export function ContainerCard({
         <div
           className={`flex h-5 w-5 items-center justify-center border-2 transition-colors ${
             selected
-              ? "border-[#0094BB] bg-[#0094BB]"
+              ? "border-accent bg-accent"
               : "border-foreground bg-background"
           }`}
         >
@@ -148,7 +148,7 @@ export function ContainerCard({
       {/* Link zone */}
       <Link
         href={`/containers/${container.id}`}
-        className="min-w-0 flex-1 p-5 transition-colors duration-200 hover:bg-[#0094BB] hover:text-background"
+        className="min-w-0 flex-1 p-5 transition-colors duration-200 hover:bg-accent hover:text-background"
       >
         <CardContent container={container} ownership={ownership} />
       </Link>

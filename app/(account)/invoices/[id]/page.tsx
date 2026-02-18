@@ -89,7 +89,7 @@ export default async function InvoiceDetailPage({ params }: Props) {
       <nav className="text-xs font-bold uppercase tracking-widest">
         <Link
           href={ROUTES.ACCOUNT_INVOICES}
-          className="text-muted-foreground transition-colors duration-200 hover:text-[#0094BB]"
+          className="text-muted-foreground transition-colors duration-200 hover:text-accent"
         >
           Mis Facturas
         </Link>
@@ -108,7 +108,7 @@ export default async function InvoiceDetailPage({ params }: Props) {
             <span className="font-mono text-sm font-bold text-muted-foreground">
               01
             </span>
-            <h2 className="text-xs font-bold uppercase tracking-widest text-[#0094BB]">
+            <h2 className="text-xs font-bold uppercase tracking-widest text-accent">
               Detalle
             </h2>
           </div>
@@ -125,7 +125,7 @@ export default async function InvoiceDetailPage({ params }: Props) {
             <a
               href={`/api/documents/invoice/${invoice.id}`}
               download
-              className="border-2 border-foreground bg-background px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-foreground transition-colors duration-200 hover:border-[#0094BB] hover:bg-[#0094BB] hover:text-white"
+              className="border-2 border-foreground bg-background px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-foreground transition-colors duration-200 hover:border-accent hover:bg-accent hover:text-white"
             >
               Descargar PDF &darr;
             </a>
@@ -176,7 +176,7 @@ export default async function InvoiceDetailPage({ params }: Props) {
           <span className="font-mono text-sm font-bold text-muted-foreground">
             02
           </span>
-          <h2 className="text-xs font-bold uppercase tracking-widest text-[#0094BB]">
+          <h2 className="text-xs font-bold uppercase tracking-widest text-accent">
             Artículos
           </h2>
         </div>
@@ -219,7 +219,7 @@ export default async function InvoiceDetailPage({ params }: Props) {
           <span className="font-mono text-sm font-bold text-muted-foreground">
             03
           </span>
-          <h2 className="text-xs font-bold uppercase tracking-widest text-[#0094BB]">
+          <h2 className="text-xs font-bold uppercase tracking-widest text-accent">
             Resumen
           </h2>
         </div>
@@ -239,7 +239,7 @@ export default async function InvoiceDetailPage({ params }: Props) {
             <dd>{formatCurrency(invoice.amount_total)}</dd>
           </div>
           {invoice.amount_residual > 0 && (
-            <div className="flex justify-between border-t-2 border-foreground/20 pt-3 text-lg font-black text-[#0094BB]">
+            <div className="flex justify-between border-t-2 border-foreground/20 pt-3 text-lg font-black text-accent">
               <dt>Saldo Pendiente</dt>
               <dd>{formatCurrency(invoice.amount_residual)}</dd>
             </div>

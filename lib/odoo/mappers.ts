@@ -44,7 +44,7 @@ export function mapOdooProduct(
         id: p.id,
         slug,
         name: p.name,
-        description: p.description_sale || "",
+        description: gasData.description || p.description_sale || "",
         type: "gas",
         categoryId,
         categoryName,

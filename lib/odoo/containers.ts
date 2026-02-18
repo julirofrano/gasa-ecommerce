@@ -11,32 +11,15 @@ import {
 } from "@/lib/utils/constants";
 
 /**
- * Resolve the top-level company partner ID for container ownership queries.
- * owner_customer on gas.container only stores parent partners (parent_id = False).
- * If the logged-in user is a child contact, we need the parent's ID instead.
- */
-export async function resolveOwnerPartnerId(
-  partnerId: number,
-): Promise<number> {
-  const partners = await odooClient.read<{
-    parent_id: [number, string] | false;
-  }>("res.partner", [partnerId], ["parent_id"]);
-  const partner = partners[0];
-  if (partner?.parent_id) {
-    return partner.parent_id[0];
-  }
-  return partnerId;
-}
-
-/**
- * Fetch all child contact IDs for a parent partner.
+ * Fetch all child contact IDs for a commercial partner.
  * Used to determine if an owned container is at this customer's location.
  */
 export async function getChildPartnerIds(
-  parentPartnerId: number,
+  commercialPartnerId: number,
 ): Promise<number[]> {
   return odooClient.search("res.partner", [
-    ["parent_id", "=", parentPartnerId],
+    ["commercial_partner_id", "=", commercialPartnerId],
+    ["id", "!=", commercialPartnerId],
   ]);
 }
 
@@ -60,13 +43,11 @@ const CONTAINER_FIELDS = [
 ];
 
 export async function getContainers(
-  partnerId: number,
+  commercialPartnerId: number,
   limit = 50,
   offset = 0,
-  preResolvedOwnerPartnerId?: number,
 ): Promise<OdooContainer[]> {
-  const ownerPartnerId =
-    preResolvedOwnerPartnerId ?? (await resolveOwnerPartnerId(partnerId));
+  const ownerPartnerId = commercialPartnerId;
   return odooClient.searchRead<OdooContainer>(
     "gas.container",
     [
