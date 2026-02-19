@@ -6,7 +6,7 @@ import { X, ChevronDown, LogOut } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import { useUIStore } from "@/stores/ui-store";
 import { useCartStore } from "@/stores/cart-store";
-import { AUTH_ENABLED, ROUTES } from "@/lib/utils/constants";
+import { AUTH_ENABLED, ODOO_ENABLED, ROUTES } from "@/lib/utils/constants";
 
 interface MobileNavItem {
   href: string;
@@ -131,48 +131,50 @@ export function MobileNav() {
         </div>
 
         {/* ── Account Section ────────────────────────────── */}
-        <div className="mt-8 border-t border-background/10 pt-8">
-          <p className="mb-4 text-[10px] font-bold uppercase tracking-widest text-background/30">
-            Mi Cuenta
-          </p>
-          {session?.user && (
-            <div className="mb-4 border-b border-background/10 pb-4">
-              <p className="text-sm font-bold text-background">
-                {session.user.name}
-              </p>
-              {session.user.companyName && (
-                <p className="mt-0.5 text-[10px] font-bold uppercase tracking-widest text-background/30">
-                  {session.user.companyName}
+        {ODOO_ENABLED && (
+          <div className="mt-8 border-t border-background/10 pt-8">
+            <p className="mb-4 text-[10px] font-bold uppercase tracking-widest text-background/30">
+              Mi Cuenta
+            </p>
+            {session?.user && (
+              <div className="mb-4 border-b border-background/10 pb-4">
+                <p className="text-sm font-bold text-background">
+                  {session.user.name}
                 </p>
-              )}
-            </div>
-          )}
-          {accountItems
-            .filter((item) => !item.requiresAuth || AUTH_ENABLED)
-            .map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={closeMobileMenu}
-                className="block border-b border-background/10 py-3 text-sm font-bold uppercase tracking-wide text-background/70 transition-colors duration-200 hover:text-accent"
+                {session.user.companyName && (
+                  <p className="mt-0.5 text-[10px] font-bold uppercase tracking-widest text-background/30">
+                    {session.user.companyName}
+                  </p>
+                )}
+              </div>
+            )}
+            {accountItems
+              .filter((item) => !item.requiresAuth || AUTH_ENABLED)
+              .map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={closeMobileMenu}
+                  className="block border-b border-background/10 py-3 text-sm font-bold uppercase tracking-wide text-background/70 transition-colors duration-200 hover:text-accent"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            {session?.user && (
+              <button
+                onClick={() => {
+                  closeMobileMenu();
+                  clearCart();
+                  signOut({ callbackUrl: "/login" });
+                }}
+                className="mt-4 flex items-center gap-2 py-3 text-sm font-bold uppercase tracking-wide text-red-400 transition-colors duration-200 hover:text-red-300"
               >
-                {item.label}
-              </Link>
-            ))}
-          {session?.user && (
-            <button
-              onClick={() => {
-                closeMobileMenu();
-                clearCart();
-                signOut({ callbackUrl: "/login" });
-              }}
-              className="mt-4 flex items-center gap-2 py-3 text-sm font-bold uppercase tracking-wide text-red-400 transition-colors duration-200 hover:text-red-300"
-            >
-              <LogOut className="h-4 w-4" />
-              Cerrar Sesion
-            </button>
-          )}
-        </div>
+                <LogOut className="h-4 w-4" />
+                Cerrar Sesion
+              </button>
+            )}
+          </div>
+        )}
       </nav>
 
       {/* ── Bottom Contact ───────────────────────────────── */}

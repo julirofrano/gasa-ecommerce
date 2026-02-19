@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { submitEthicsReport } from "./actions";
 
 const categories = [
   "Conducta antiética",
@@ -21,13 +22,28 @@ const severityLevels = [
 ];
 
 export function AnonymousReportForm() {
-  const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
+    "idle",
+  );
+  const [errorMsg, setErrorMsg] = useState("");
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setStatus("sending");
-    // TODO: Wire to server action / email endpoint
-    setTimeout(() => setStatus("sent"), 1200);
+    setErrorMsg("");
+
+    const formData = new FormData(e.currentTarget);
+    const result = await submitEthicsReport(formData);
+
+    if (result.success) {
+      setStatus("sent");
+    } else {
+      setErrorMsg(
+        result.error ||
+          "Ocurrió un error al enviar el reporte. Intente nuevamente.",
+      );
+      setStatus("error");
+    }
   }
 
   if (status === "sent") {
@@ -190,6 +206,13 @@ export function AnonymousReportForm() {
           placeholder="Email, teléfono, o cualquier medio de contacto..."
         />
       </div>
+
+      {/* Error */}
+      {status === "error" && errorMsg && (
+        <div className="border-l-4 border-red-600 bg-red-50 p-4 dark:bg-red-950/20">
+          <p className="text-sm text-red-700 dark:text-red-400">{errorMsg}</p>
+        </div>
+      )}
 
       {/* Submit */}
       <div className="flex items-center gap-6">

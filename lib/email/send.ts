@@ -8,7 +8,17 @@ interface SendResult {
   error?: string;
 }
 
-function emailLayout(content: string): string {
+function emailLayout(content: string, options?: { subtitle?: string }): string {
+  const subtitle = options?.subtitle ?? "Portal de Clientes";
+  const subtitleHtml = subtitle
+    ? `<p style="margin:12px 0 0;font-size:24px;font-weight:900;text-transform:uppercase;letter-spacing:-0.04em;color:#ffffff;line-height:1;">
+              ${subtitle}
+            </p>`
+    : "";
+  const footerFrom = subtitle
+    ? `el ${subtitle} de Gases Aconcagua S.A.`
+    : "Gases Aconcagua S.A.";
+
   return `<!DOCTYPE html>
 <html lang="es">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -22,9 +32,7 @@ function emailLayout(content: string): string {
             <p style="margin:0;font-size:11px;font-weight:700;letter-spacing:0.3em;text-transform:uppercase;color:${ACCENT_COLOR};">
               Gases Aconcagua S.A.
             </p>
-            <p style="margin:12px 0 0;font-size:24px;font-weight:900;text-transform:uppercase;letter-spacing:-0.04em;color:#ffffff;line-height:1;">
-              Portal de Clientes
-            </p>
+            ${subtitleHtml}
           </td>
         </tr>
         <!-- Content -->
@@ -37,7 +45,7 @@ function emailLayout(content: string): string {
         <tr>
           <td style="border-top:2px solid #000000;padding:24px 40px;">
             <p style="margin:0;font-size:11px;color:#666666;line-height:1.6;">
-              Este correo fue enviado automáticamente por el Portal de Clientes de Gases Aconcagua S.A.
+              Este correo fue enviado automáticamente por ${footerFrom}.
               Si no solicitó este correo, puede ignorarlo de forma segura.
             </p>
           </td>
@@ -312,6 +320,168 @@ export async function sendEmailConfirmationEmail(
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     console.error("Failed to send email confirmation email:", message);
+    if (isDev) return { success: true };
+    return { success: false, error: message };
+  }
+}
+
+export async function sendContactFormEmail(data: {
+  name: string;
+  company?: string;
+  email: string;
+  phone?: string;
+  subject: string;
+  message: string;
+}): Promise<SendResult> {
+  const to = process.env.CONTACT_EMAIL;
+  if (!to) {
+    console.error("CONTACT_EMAIL not set");
+    if (isDev) return { success: true };
+    return { success: false, error: "Configuración de email incompleta" };
+  }
+
+  const rows = [
+    { label: "Nombre", value: data.name },
+    ...(data.company ? [{ label: "Empresa", value: data.company }] : []),
+    { label: "Email", value: data.email },
+    ...(data.phone ? [{ label: "Teléfono", value: data.phone }] : []),
+    { label: "Asunto", value: data.subject },
+  ];
+
+  const tableRows = rows
+    .map(
+      (r) => `<tr>
+        <td style="padding:8px 0;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#666666;width:120px;">${r.label}</td>
+        <td style="padding:8px 0;font-size:14px;color:#000000;">${r.value}</td>
+      </tr>`,
+    )
+    .join("");
+
+  const html = emailLayout(
+    `
+    <p style="margin:0;font-size:11px;font-weight:700;letter-spacing:0.3em;text-transform:uppercase;color:${ACCENT_COLOR};">
+      Nueva Consulta
+    </p>
+    <p style="margin:16px 0 0;font-size:15px;line-height:1.7;color:#000000;">
+      Se recibió una nueva consulta a través del formulario de contacto:
+    </p>
+    <table role="presentation" cellpadding="0" cellspacing="0" style="margin:24px 0;width:100%;">
+      ${tableRows}
+    </table>
+    <div style="margin:24px 0;padding:16px;background-color:#f2f2f2;border-left:4px solid #000000;">
+      <p style="margin:0;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#666666;">Mensaje</p>
+      <p style="margin:8px 0 0;font-size:14px;line-height:1.7;color:#000000;white-space:pre-wrap;">${data.message}</p>
+    </div>
+  `,
+    { subtitle: "" },
+  );
+
+  if (isDev) {
+    console.log(`[DEV] Contact form email → To: ${to}`);
+    console.log(
+      `[DEV] From: ${data.name} <${data.email}>, Subject: ${data.subject}`,
+    );
+  }
+
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to,
+      replyTo: data.email,
+      subject: `Nueva consulta (${data.subject}): ${data.name} — GASA`,
+      html,
+    });
+    return { success: true };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error("Failed to send contact form email:", message);
+    if (isDev) return { success: true };
+    return { success: false, error: message };
+  }
+}
+
+export async function sendEthicsReportEmail(data: {
+  category: string;
+  severity: string;
+  incidentDate?: string;
+  location?: string;
+  description: string;
+  contact?: string;
+}): Promise<SendResult> {
+  const to = process.env.ETHICS_EMAIL;
+  if (!to) {
+    console.error("ETHICS_EMAIL not set");
+    if (isDev) return { success: true };
+    return { success: false, error: "Configuración de email incompleta" };
+  }
+
+  const severityLabels: Record<string, string> = {
+    low: "Bajo",
+    medium: "Medio",
+    high: "Alto",
+    critical: "Crítico",
+  };
+
+  const rows = [
+    { label: "Categoría", value: data.category },
+    {
+      label: "Gravedad",
+      value: severityLabels[data.severity] || data.severity,
+    },
+    ...(data.incidentDate
+      ? [{ label: "Fecha del Incidente", value: data.incidentDate }]
+      : []),
+    ...(data.location ? [{ label: "Lugar", value: data.location }] : []),
+    ...(data.contact
+      ? [{ label: "Contacto (confidencial)", value: data.contact }]
+      : []),
+  ];
+
+  const tableRows = rows
+    .map(
+      (r) => `<tr>
+        <td style="padding:8px 0;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#666666;width:160px;">${r.label}</td>
+        <td style="padding:8px 0;font-size:14px;color:#000000;">${r.value}</td>
+      </tr>`,
+    )
+    .join("");
+
+  const severityLabel = severityLabels[data.severity] || data.severity;
+  const html = emailLayout(
+    `
+    <p style="margin:0;font-size:11px;font-weight:700;letter-spacing:0.3em;text-transform:uppercase;color:${ACCENT_COLOR};">
+      Reporte Ético
+    </p>
+    <p style="margin:16px 0 0;font-size:15px;line-height:1.7;color:#000000;">
+      Se recibió un nuevo reporte anónimo a través del canal de ética:
+    </p>
+    <table role="presentation" cellpadding="0" cellspacing="0" style="margin:24px 0;width:100%;">
+      ${tableRows}
+    </table>
+    <div style="margin:24px 0;padding:16px;background-color:#f2f2f2;border-left:4px solid #000000;">
+      <p style="margin:0;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#666666;">Descripción</p>
+      <p style="margin:8px 0 0;font-size:14px;line-height:1.7;color:#000000;white-space:pre-wrap;">${data.description}</p>
+    </div>
+  `,
+    { subtitle: "" },
+  );
+
+  if (isDev) {
+    console.log(`[DEV] Ethics report email → To: ${to}`);
+    console.log(`[DEV] Category: ${data.category}, Severity: ${severityLabel}`);
+  }
+
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to,
+      subject: `Reporte Ético [${severityLabel}]: ${data.category} — GASA`,
+      html,
+    });
+    return { success: true };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error("Failed to send ethics report email:", message);
     if (isDev) return { success: true };
     return { success: false, error: message };
   }

@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { ROUTES } from '@/lib/utils/constants';
+import Link from "next/link";
+import { ODOO_ENABLED, ROUTES } from "@/lib/utils/constants";
 
 const heroLines = [
-  { text: 'Gases', accent: false },
-  { text: 'y materiales para', accent: false },
-  { text: 'la industria', accent: false },
-  { text: 'que mueve', accent: true },
-  { text: 'el país', accent: false },
+  { text: "Gases", accent: false },
+  { text: "y materiales para", accent: false },
+  { text: "la industria", accent: false },
+  { text: "que mueve", accent: true },
+  { text: "el país", accent: false },
 ];
 
 export function HeroAnimated() {
@@ -22,7 +22,7 @@ export function HeroAnimated() {
           {heroLines.map((line, i) => (
             <span
               key={i}
-              className={`animate-hero-line block ${line.accent ? 'text-accent' : ''}`}
+              className={`animate-hero-line block ${line.accent ? "text-accent" : ""}`}
               style={{ animationDelay: `${0.2 + i * 0.15}s` }}
             >
               {line.text}
@@ -31,7 +31,7 @@ export function HeroAnimated() {
         </h1>
         <div
           className="animate-hero-line mt-12 flex flex-col gap-10 sm:flex-row sm:items-end sm:justify-between"
-          style={{ animationDelay: '1.0s' }}
+          style={{ animationDelay: "1.0s" }}
         >
           <div className="max-w-md">
             <p className="text-base leading-relaxed text-muted-foreground md:text-lg">
@@ -45,12 +45,14 @@ export function HeroAnimated() {
               >
                 Ver Catálogo
               </Link>
-              <Link
-                href={ROUTES.LOGIN}
-                className="inline-flex items-center justify-center border-2 border-foreground bg-background px-8 py-3.5 text-sm font-bold uppercase tracking-wide text-foreground transition-colors duration-200 hover:bg-foreground hover:text-background"
-              >
-                Portal de Cliente
-              </Link>
+              {ODOO_ENABLED && (
+                <Link
+                  href={ROUTES.LOGIN}
+                  className="inline-flex items-center justify-center border-2 border-foreground bg-background px-8 py-3.5 text-sm font-bold uppercase tracking-wide text-foreground transition-colors duration-200 hover:bg-foreground hover:text-background"
+                >
+                  Portal de Cliente
+                </Link>
+              )}
             </div>
           </div>
           <p className="hidden text-right text-xs font-bold uppercase tracking-widest text-muted-foreground md:block">
